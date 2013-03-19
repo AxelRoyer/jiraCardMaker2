@@ -103,7 +103,15 @@ function getJiras() {
 function toggleOptions()
 {
 	var stageFour = document.getElementById("stageFour");
-	stageFour.style.display = "block";
+	var toggleOptionsButton = document.getElementById("toggleOptionsButton");
+	if (stageFour.style.display == "none") {
+		stageFour.style.display = "block";
+		toggleOptionsButton.innerHTML = "Hide Options";
+	} else {
+		stageFour.style.display = "none";
+		toggleOptionsButton.innerHTML = "Show Options";
+	}
+
 }
 
 function receiveJiraCallback(issues) {
@@ -116,6 +124,7 @@ function receiveJiraCallback(issues) {
 }
 
 function generateTickets() {
+	window.location.hash = "#tickets";
 	var jiraUrl = document.getElementById("jiraLocation").value;
 	var jiraChecklists = document.getElementsByClassName("jiracheck");
 	var checklistToDisplay = getChecked("jiracheck");
@@ -246,11 +255,6 @@ function showInterface() {
 	interf.style.display = "block";
 }
 
-setConfigFromCookies();
-drawExampleCard();
-key('esc', function(){ showInterface(); });
-
-
 //Greenhopper data
 
 //https://jira.caplin.com/secure/RapidBoard.jspa?rapidView=11
@@ -263,17 +267,32 @@ key('esc', function(){ showInterface(); });
 
 //
 var jiraNavigatorDiv = document.getElementById("jiraNavigator");
-function updateJiraNavigator() {
-	var stageTwo = document.getElementById("stageTwo");
-	stageTwo.style.display = "block";
 
+function updateJiraNavigator() {
 	var locationElement = document.getElementById("jiraLocation");
 	if (locationElement != null) {
 		var location = locationElement.value;
+
+		if (location == "") {
+			alert("You need to set a valid Jira Location")
+			jn = null;
+			return;
+		}
+
+		var stageTwo = document.getElementById("stageTwo");
+		stageTwo.style.display = "block";
 		jn = new JiraNavigator(location);
 		jn.renderInElement(jiraNavigatorDiv);
 		jn.clearJiraList();
 	}
 }
 
+
+setConfigFromCookies();
+drawExampleCard();
+window.onhashchange = function() {
+	if (window.location.hash !== "#tickets") {
+		showInterface();
+	}
+}
 //updateJiraNavigator();
