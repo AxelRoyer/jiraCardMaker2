@@ -26,7 +26,6 @@ JiraNavigator.prototype.render = function() {
 			this.renderElement.appendChild(document.createElement("br"));
 			this.renderElement.appendChild(this.projectDropDown);
 			if (this.fixVersionsDropDown != null ) {
-
 				this.renderElement.appendChild(document.createElement("br"));
 				this.renderElement.appendChild(this.fixVersionsDropDown);
 			}
@@ -58,6 +57,7 @@ JiraNavigator.prototype.onchange = function(dropdown) {
 	if (this.navigationTypes.value == "rapidboard") {
 		this.clearRapidViewsIfNecessary();
 	} else if (this.navigationTypes.value == "fixversion") {
+		this.clearJiraList();
 		this.clearFixViewIfNecessary();
 	} else if (this.navigationTypes.value == "jiras") {
 		this.showIndividualJirasField();
@@ -105,124 +105,32 @@ JiraNavigator.prototype.getNavigationTypes = function(projects) {
 	var self = this;
 	select.onchange = function() {self.onchange(this)};
 
-	var blankOption;
-	blankOption = document.createElement("option");
-	blankOption.setAttribute("value", "none");
-	blankOption.innerHTML = "None"
-	select.appendChild(blankOption);
-
-	var option;
-	option = document.createElement("option");
-	option.setAttribute("value", "fixversion");
-	option.innerHTML = "FixVersion"
-	select.appendChild(option);
-
-	var option2;
-	option2 = document.createElement("option");
-	option2.setAttribute("value", "rapidboard");
-	option2.innerHTML = "Rapid Board"
-	select.appendChild(option2);
-
-	var option3;
-	option3 = document.createElement("option");
-	option3.setAttribute("value", "jiras");
-	option3.innerHTML = "Comma Seperated Jiras"
-	select.appendChild(option3);
+	select.appendChild(SelectUtilities._createNoneOption());
+	select.appendChild(SelectUtilities._createOption("fixversion", "FixVersion"));
+	select.appendChild(SelectUtilities._createOption("rapidboard", "Rapid Board"));
+	select.appendChild(SelectUtilities._createOption("jiras", "Comma Seperated Jiras"));
 
 	return select;
 }
 
 JiraNavigator.prototype.getProjectDropDown = function(projects) {
-	var select = document.createElement("select");
-	select.name = "project";
-	select.style.width = "300px";
-	var self = this;
-	select.onchange = function() {self.onchange(this)};
-
-	var option;
-	option = document.createElement("option");
-	option.setAttribute("value", "none");
-	option.innerHTML = "None";
-	select.appendChild(option);
-
-	for (var i=0; i < projects.length; i++) {
-		var project = projects[i];
-		var option;
-
-		option = document.createElement("option");
-		option.setAttribute("value", project.key);
-		option.innerHTML = project.name;
-		select.appendChild(option);
-	}
+	var select = SelectUtilities._getBasicDropDown("project", this, "onchange");
+	select.appendChild(SelectUtilities._createNoneOption());
+	SelectUtilities._populateSelect(select, projects, "key", "name");
 	return select;
 }
 
 JiraNavigator.prototype.getFixVersionsDropDown = function(fixVersions) {
-	var select = document.createElement("select");
-	select.name = "fixVersions";
-	select.style.width = "300px";
-	var self = this;
-	select.onchange = function() {self.onchange(this)};
-
-	var option;
-	option = document.createElement("option");
-	option.setAttribute("value", "none");
-	option.innerHTML = "None";
-	select.appendChild(option);
-
-	for (var i=0; i < fixVersions.length; i++) {
-		var fixVersion = fixVersions[i];
-		var option;
-
-		option = document.createElement("option");
-		option.setAttribute("value", fixVersion.id);
-		option.innerHTML = fixVersion.name;
-		select.appendChild(option);
-	}
+	var select = SelectUtilities._getBasicDropDown("fixVersions", this, "onchange");
+	select.appendChild(SelectUtilities._createNoneOption());
+	SelectUtilities._populateSelect(select, fixVersions, "id", "name");
 	return select;
 }
 
 JiraNavigator.prototype.getRapidViewDropDown = function(rapidViews) {
-	var select = document.createElement("select");
-	select.name = "rapidView";
-	select.style.width = "300px";
-	var self = this;
-	select.onchange = function() {self.onchange(this)};
-
-	var option;
-	option = document.createElement("option");
-	option.setAttribute("value", "none");
-	option.innerHTML = "None";
-	select.appendChild(option);
-
-	for (var i=0; i < rapidViews.views.length; i++) {
-		var rapidView = rapidViews.views[i];
-		var option;
-
-		option = document.createElement("option");
-		option.setAttribute("value", rapidView.id);
-		option.innerHTML = rapidView.name;
-		select.appendChild(option);
-	}
-	return select;
-}
-
-JiraNavigator.prototype.getRapidViewSprintDropDown = function(sprints) {
-	var select = document.createElement("select");
-	select.name = "rapidViewSprints";
-	select.style.width = "300px";
-	var self = this;
-	select.onchange = function() {self.onchange(this)};
-
-	for (var i=0; i < sprints.sprints.length; i++) {
-		var sprint = sprints.sprints[i];
-		var option;
-
-		option = document.createElement("option");
-		option.setAttribute("value", sprint.id);
-		option.innerHTML = sprint.name;
-		select.appendChild(option);
-	}
+	var select = SelectUtilities._getBasicDropDown("rapidView", this, "onchange");
+	select.appendChild(SelectUtilities._createNoneOption());
+	SelectUtilities._populateSelect(select, rapidViews.views, "id", "name");
 	return select;
 }
 
@@ -243,6 +151,11 @@ JiraNavigator.prototype.receiveFixVersionsData = function(views) {
 
 JiraNavigator.prototype.receiveJiraCallback = function(jiras) {
 	receiveJiraCallback(jiras);
+}
+
+JiraNavigator.prototype.clearJiraList = function(jiras) {
+	var stageThree = document.getElementById("stageThree");
+	stageThree.style.display = "none";
 }
 
 JiraNavigator.prototype.setJira = function(jira) {
