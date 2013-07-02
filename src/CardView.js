@@ -25,6 +25,9 @@ CardView.prototype.getElement = function () {
 };
 
 CardView.prototype.getCardParentSummary = function() {
+	if (location.hash.match(/parentIdOnly/)) {
+		return this.cardModel.parentIssueId;
+	}
 	var parentIssue = this.issueMap[this.cardModel.parentIssueId];
 	return parentIssue != null ? parentIssue.summary : null;
 }
