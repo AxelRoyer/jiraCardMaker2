@@ -12,8 +12,10 @@ var JiraApiHandler = function(jiraUrl, listener) {
 };
 
 // Interface method - requestIssues passing in an array of issue ids.
-JiraApiHandler.prototype.requestIssues = function(issueIds) {
+JiraApiHandler.prototype.requestIssues = function(issueIds, callback) {
+    //TODO: This will break if invoked twice quickly.
 	if (!this.requested) {
+        this.requestIssuesCallback = callback;
 		this.requested = true;
 		this.requestJiras(issueIds);
 		this.chosenIssues = issueIds;
@@ -44,9 +46,17 @@ JiraApiHandler.prototype.parentsNotLoaded = function () {
 	var parentsNotLoaded = [];
 	for (var index in this.jiraMap) {
 		var card = this.jiraMap[index];
-		if (!this.isParentLoaded(card)) {
-			parentsNotLoaded.push(card.parentIssueId);
-		}
+        if (!this.isParentLoaded(card)) {
+            parentsNotLoaded.push(card.parentIssueId);
+        }
+        for (var i=0; i < card.subtasks.length; i++) {
+            var subtaskId = card.subtasks[i];
+            if (this.jiraMap[subtaskId] == null) {
+                parentsNotLoaded.push(subtaskId);
+                this.chosenIssues.push(subtaskId);
+            }
+        }
+
 	}
 	return parentsNotLoaded
 };
@@ -59,69 +69,19 @@ JiraApiHandler.prototype.processCardsData = function(jiraData) {
 	this.listener.receiveJiraCallback(jiraKeys);
 };
 
-JiraApiHandler.prototype.processRapidBoardViews = function(jiraData) {
-	this.listener.receiveRapidBoardViews(jiraData);
-};
-
-JiraApiHandler.prototype.processProjectData = function(jiraData) {
-	this.listener.receiveProjectData(jiraData);
-};
-
-JiraApiHandler.prototype.processFixVersionsData = function(jiraData) {
-	this.listener.receiveFixVersionsData(jiraData);
-};
-
-JiraApiHandler.prototype.processRapidBoardSprints = function(jiraData) {
-	var callbackName = this.getCallbackName();
-	var sprintId = RapidBoardHandler.getOpenSprintFromJSON(jiraData)[0];
-	if (sprintId == undefined) {
-		alert("There appears to be no available data. You may need to login");
-	} else {
-	    this.jiraApi.getGreenhopperSprint(function(data) {window[callbackName](data)}, jiraData.rapidViewId, sprintId);
-	}
-};
-
-JiraApiHandler.prototype.processRapidBoardSprint = function(jiraData) {
-	var issues = RapidBoardHandler.getJirasFromJSON(jiraData);
-	this.listener.receiveJiraCallback(issues);
-}
-
 JiraApiHandler.prototype.processCardData = function(jiraData) {
 this.callbacksReceived++;
-	this.jiraMap[jiraData.key] = this.getCard(jiraData);
+	this.jiraMap[jiraData.key] = this.createCard(jiraData);
 	if (this.callbacksReceived == this.expectedCallbacks) {
 		this.renderCardsIfReady();
 	}
 };
 
 JiraApiHandler.prototype.processJiraData = function(jiraData) {
-	this.hideLoadingIndicator();
-	if (jiraData.length == 0)
-	{
-		alert('No data was returned! Are there any Jiras in this bucket?');
-	}
-	if (jiraData.views != null) {
-		this.processRapidBoardViews(jiraData);
-	} else if (jiraData.sprints != null) {
-		this.processRapidBoardSprints(jiraData);
-	} else if (jiraData.contents != null) {
-		debugger;
-		this.processRapidBoardSprint(jiraData);
-	} else if (jiraData.issues != null) {
-		this.processCardsData(jiraData);
-	} else if (jiraData.length != undefined && jiraData[0].self.indexOf("project") != -1) {
-		console.log(jiraData[0])
-		this.processProjectData(jiraData);
-	} else if (jiraData.length != undefined && jiraData[0].self.indexOf("version") != -1) {
-		this.processFixVersionsData(jiraData);
-	} else {
-		this.processCardData(jiraData);
-		//console.log(jiraData);
-		//throw "Data received from JiraAPI unrecognized";
-	}
+	this.processCardData(jiraData);
 };
 
-JiraApiHandler.prototype.getCard = function (jira) {
+JiraApiHandler.prototype.createCard = function (jira) {
 	var componentString = "";
 	var components = jira.fields.components;
 	if (components.length != 0) {
@@ -138,8 +98,10 @@ JiraApiHandler.prototype.getCard = function (jira) {
 		jira.fields.summary,
 		componentString,
 		jira.fields["customfield_10151"],
-		jira.fields["customfield_10261"],
-		jira.fields.parent ? jira.fields.parent.key : null
+        jira.fields["customfield_10261"],
+        jira.fields["customfield_10870"],
+		jira.fields.parent ? jira.fields.parent.key : null,
+        jira.fields.subtasks.map(function(_) {return _.key})
 	);
 	return card;
 };
@@ -149,23 +111,70 @@ JiraApiHandler.prototype.renderCardsIfReady = function () {
 		this.requestJiras(parentsNotLoaded);
 	if (parentsNotLoaded.length !== 0) {
 	} else {
-		this.listener.onIssuesAvailable(this.chosenIssues, this.jiraMap);
+        this.requestIssuesCallback(this.chosenIssues, this.jiraMap);
 	}
 };
 
-JiraApiHandler.prototype.hideLoadingIndicator = function() {
-	var li = document.getElementById("loading");
-	li.style.display = "none";
-	clearTimeout(timeoutCallback);
+JiraApiHandler.prototype.getRapidBoardSprint = function(viewId, sprintId, callback) {
+    this.jiraApi.getGreenhopperSprint(callback, viewId, sprintId);
 }
 
-JiraApiHandler.prototype.showLoadingIndicator= function() {
-	var li = document.getElementById("loading");
-	li.style.display = "block";
-	if (typeof timeoutCallback !== "undefined") {
-		clearTimeout(timeoutCallback);
+JiraApiHandler.prototype.requestRapidSprints = function(sprintId, callback) {
+	//https://jira.caplin.com/rest/greenhopper/latest/sprints/11
+	jiraUrl = this.baseUrl + "/rest/greenhopper/latest/sprints/" + sprintId;
+	this.jiraApi.jch.getData(callback, jiraUrl);
+}
+
+JiraApiHandler.prototype.requestRapidViews = function(callback) {
+	//https://jira.caplin.com/rest/greenhopper/latest/rapidviews/list
+	var jiraUrl = this.baseUrl + "/rest/greenhopper/latest/rapidviews/list";
+	this.jiraApi.jch.getData(callback, jiraUrl);
+}
+
+JiraApiHandler.prototype.requestXBoard = function(rapidViewId, callback) {
+	//https://jira.caplin.com/rest/greenhopper/1.0/xboard/plan/backlog/data.json?rapidViewId=43
+	var jiraUrl = this.baseUrl + "/rest/greenhopper/1.0/xboard/plan/backlog/data.json?rapidViewId=" + rapidViewId;
+	this.jiraApi.jch.getData(callback, jiraUrl);
+}
+
+JiraApiHandler.prototype.requestXBoards = function(callback) {
+	//https://jira.caplin.com/rest/greenhopper/1.0/rapidviews/viewsData.json
+	var jiraUrl = this.baseUrl + "/rest/greenhopper/1.0/rapidviews/viewsData.json";
+	this.jiraApi.jch.getData(callback, jiraUrl);
+}
+
+JiraApiHandler.prototype.requestProjects = function(callback) {
+	//https://jira.springsource.org/rest/api/latest/project
+	var jiraUrl = this.baseUrl + "/rest/api/latest/project";
+	this.jiraApi.jch.getData(callback, jiraUrl);
+}
+
+JiraApiHandler.prototype.requestFixVersions = function(project, callback) {
+	//https://jira.springsource.org/rest/api/latest/project/BATCH/versions
+	var jiraUrl = this.baseUrl + "/rest/api/latest/project/" + project + "/versions"
+	this.jiraApi.jch.getData(callback, jiraUrl);
+}
+
+JiraApiHandler.prototype.requestFixVersion = function(project, fixversion, callback) {
+
+    jiraUrl = this.baseUrl + "/rest/api/latest/search?jql=project=" + project + "%20AND%20fixversion=" + fixversion + "&fields=key&maxResults=1000";
+    this.jiraApi.jch.getData(callback, jiraUrl);
+};
+
+JiraApiHandler.prototype.requestJira = function(jiraId) {
+	var callbackName = this.getCallbackName();
+	var jiraUrl = this.baseUrl + "/rest/api/latest/issue/" + jiraId + "?jsonp-callback="+callbackName;
+	this.jiraApi.jch.getData(window[callbackName], jiraUrl);
+};
+
+JiraApiHandler.prototype.getCallbackName = function() {
+	var callbackName = "_jiraProcessData_";
+	while (window[callbackName]) {
+		callbackName += "X";
 	}
-	timeoutCallback = setTimeout(function() {
-		alert("Haven't received any data in 5 seconds. Something may have failed");
-	}, 5000);
+	window[callbackName] = function(jiraData) {
+		this.processJiraData(jiraData);
+		delete window[callbackName];
+	}.bind(this);
+	return callbackName
 }

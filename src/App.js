@@ -23,18 +23,27 @@ jira.App = function (element, baseUrl, fixVersion, color, qrcode, parentEnabled,
 	this.businessValue = businessValue;
 	this.cardsAdded = 0;
 	this.currentPage = null;
+    this.issueRequester = new JiraApiHandler(this.baseUrl, this);
 };
 
 jira.App.prototype.requestIssues = function(selectedIssueIds) {
 	this.selectedIssueIds = selectedIssueIds;
-
-	this.issueRequester = new JiraApiHandler(this.baseUrl, this);
-	this.issueRequester.requestIssues(selectedIssueIds);
+	this.issueRequester.requestIssues(selectedIssueIds, function(issues, issueMap) {
+        this.onIssuesAvailable(issues, issueMap);
+    }.bind(this));
 };
 
 jira.App.prototype.onIssuesAvailable = function(issueIds, issueMap) {
+
 	for (var i = 0; i < issueIds.length; i++) {
 		var cardModel = issueMap[issueIds[i]];
+
+		//TODO: May god have mercy on my soul
+		if (cardModel.parentIssueId !== null) {
+			if (issueMap[cardModel.parentIssueId].epic !== null) {
+				cardModel.epic = issueMap[cardModel.parentIssueId].epic;
+			}
+		}
 
 		var cardView = new CardView(
 			cardModel,
@@ -45,7 +54,8 @@ jira.App.prototype.onIssuesAvailable = function(issueIds, issueMap) {
 			this.tagEnabled,
 			this.colorEnabled,
 			this.qrcodeEnabled,
-			this.businessValue
+			this.businessValue,
+            true
 		);
 
 		this.addTicket(cardView);
