@@ -25,13 +25,16 @@ JiraApiHandler.prototype.requestIssues = function(issueIds, callback) {
 };
 
 JiraApiHandler.prototype.requestJiras = function(jiraIds) {
-	this.expectedCallbacks = 0;
+    jiraIds = _.uniq(jiraIds);
+	this.expectedCallbacks = jiraIds.length;
 	this.callbacksReceived = 0;
-	for (var i = 0; i < jiraIds.length; i++) {
-		this.expectedCallbacks++;
-		this.requestJira(jiraIds[i]);
-	}
+	this.requestJirasWithSQL(jiraIds, this.processCardsData.bind(this));
 };
+
+JiraApiHandler.getJirasRequestQuery = function(jiraIds) {
+	if (jiraIds == null) return null;
+	return jiraIds.map(λ("'key='+_")).join("+or+");
+}
 
 
 JiraApiHandler.prototype.isParentLoaded = function (card) {
@@ -56,17 +59,14 @@ JiraApiHandler.prototype.parentsNotLoaded = function () {
                 this.chosenIssues.push(subtaskId);
             }
         }
-
 	}
 	return parentsNotLoaded
 };
 
 JiraApiHandler.prototype.processCardsData = function(jiraData) {
-	var jiraKeys = [];
-	for (var i=0; i < jiraData.issues.length; i++) {
-		jiraKeys.push(jiraData.issues[i].key);
-	}
-	this.listener.receiveJiraCallback(jiraKeys);
+	jiraData.issues.forEach(function(issue) {
+		this.processCardData(issue);
+	}.bind(this));
 };
 
 JiraApiHandler.prototype.processCardData = function(jiraData) {
@@ -122,6 +122,14 @@ JiraApiHandler.prototype.getRapidBoardSprint = function(viewId, sprintId, callba
 JiraApiHandler.prototype.requestRapidSprints = function(sprintId, callback) {
 	//https://jira.caplin.com/rest/greenhopper/latest/sprints/11
 	jiraUrl = this.baseUrl + "/rest/greenhopper/latest/sprints/" + sprintId;
+
+	if (document.getElementById('jiraOnDemand').checked) {
+		//CJB. Modified to work around recent bug in RapidBoard API
+		//https://github.com/Shikaga/JiraAgileCardMaker/issues/20
+		//https://jira.caplin.com/rest/greenhopper/latest/sprintquery/11?includeFutureSprints=true&includeHistoricSprints=false
+		jiraUrl = this.baseUrl + "/rest/greenhopper/latest/sprintquery/" + sprintId + "?includeFutureSprints=true&includeHistoricSprints=false";
+	}
+
 	this.jiraApi.jch.getData(callback, jiraUrl);
 }
 
@@ -161,10 +169,10 @@ JiraApiHandler.prototype.requestFixVersion = function(project, fixversion, callb
     this.jiraApi.jch.getData(callback, jiraUrl);
 };
 
-JiraApiHandler.prototype.requestJira = function(jiraId) {
-	var callbackName = this.getCallbackName();
-	var jiraUrl = this.baseUrl + "/rest/api/latest/issue/" + jiraId + "?jsonp-callback="+callbackName;
-	this.jiraApi.jch.getData(window[callbackName], jiraUrl);
+JiraApiHandler.prototype.requestJirasWithSQL = function(jiraIds,callback) {
+	if (jiraIds.length == 0) return;
+	var jiraUrl = this.baseUrl + "/rest/api/latest/search?jql=" + JiraApiHandler.getJirasRequestQuery(jiraIds) + "&maxResults=1000";
+	this.jiraApi.jch.getData(callback, jiraUrl);
 };
 
 JiraApiHandler.prototype.getCallbackName = function() {

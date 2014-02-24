@@ -9,16 +9,20 @@
 	<script type="text/javascript" src="src/JiraApiHandler.js"></script>
 	<script type="text/javascript" src="src/Card.js"></script>
 	<script type="text/javascript" src="src/IssueChecklistHandler.js"></script>
-	<script type="text/javascript" src="src/JiraNavigator.js"></script>
+	<script type="text/javascript" src="src/navigators/JiraNavigator.js"></script>
 	<script type="text/javascript" src="src/RapidBoardHandler.js"></script>
-	<script type="text/javascript" src="src/FixVersionNavigator.js"></script>
-	<script type="text/javascript" src="src/RapidBoardNavigator.js"></script>
-    <script type="text/javascript" src="src/CSVNavigator.js"></script>
-    <script type="text/javascript" src="src/XBoardNavigator.js"></script>
+	<script type="text/javascript" src="src/navigators/FixVersionNavigator.js"></script>
+	<script type="text/javascript" src="src/navigators/RapidBoardNavigator.js"></script>
+    <script type="text/javascript" src="src/navigators/CSVNavigator.js"></script>
+    <script type="text/javascript" src="src/navigators/XBoardNavigator.js"></script>
     <script type="text/javascript" src="src/JiraApi.js"></script>
     <script type="text/javascript" src="src/JiraCommunicationHandler.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 	<script type="text/javascript" src="lib/knockout.js"></script>
+	<script type="text/javascript" src="lib/Cookies.js"></script>
+	<script type="text/javascript" src="lib/Keymaster.js"></script>
+    <script type="text/javascript" src="lib/MyLambda.js"></script>
+    <script type="text/javascript" src="lib/Underscore.js"></script>
 
 
 	<link rel="stylesheet" type="text/css" href="styles/style.css">
@@ -47,11 +51,13 @@
 					<li>Show Parent Description: <input checked type="checkbox" id="parentdescription" onclick="drawExampleCard()"/></li>
 					<li>Show Component Description: <input checked type="checkbox" id="componentdescription" onclick="drawExampleCard()" /></li>
 					<li>Show Tag Description: <input type="checkbox" id="tagdescription" onclick="drawExampleCard()"/></li>
-					<li>Show Business Value: <input type="checkbox" id="businessvalue" onclick="drawExampleCard()"/></li>
+                    <li>Show Business Value: <input type="checkbox" id="businessvalue" onclick="drawExampleCard()"/></li>
+					<li>Show Epics: <input type="checkbox" id="epicsEnabled" onclick="drawExampleCard()"/></li>
 				</ul>
 			</div>
 		</div>
 		<div id="stageOne">
+			<li>Using Jira On Demand?<input type="checkbox" id="jiraOnDemand"/></li>
 			<h2>Set your Jira Location</h2>
             Username: <input id="username" value=""/><br />
             Password: <input type="password" id="password" value=""/><br />
