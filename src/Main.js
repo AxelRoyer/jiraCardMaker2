@@ -27,14 +27,12 @@ function wizard() {
 				setWizardCookie();
 				project = url.substring(projectStart + 7, fixVersionStart - 1);
 				fixversion = url.substring(fixVersionStart + 14);
-				debugger;
 			} else {
 				alert("This url was unrecognized");
 				alert("try: \"http://jira.caplin.com/browse/PSL/fixforversion/12733\"")
 			}
 		} else if (urlType == "rapidBoard") {
 			var sprint = RapidBoardHandler.getSprintIfFromURL(url);
-			debugger;
 			//document.getElementById("rapidSprint").value = sprint;
 		} else if (urlType == "jira") {
 			jn.setJira(getJiraFromUrl(url));
@@ -182,6 +180,7 @@ function drawExampleCard() {
 			document.getElementById("qrcode").checked,
 			document.getElementById("businessvalue").checked);
 
+		exampleCardContainer.innerHTML = "";
 		exampleCardContainer.appendChild(view.getElement());
 	}
 }
