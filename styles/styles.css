@@ -89,8 +89,20 @@ section > .section-body {
 .page-to-print .ticket {
   margin: 0.5rem; }
 
-.options-panel label {
+label {
   display: block; }
+
+.authentication-panel span {
+  display: inline-block;
+  width: 130px; }
+
+.authentication-panel button {
+  background-color: #FF9900;
+  border: none;
+  height: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: 10px; }
 
 .page {
   page-break-before: always;

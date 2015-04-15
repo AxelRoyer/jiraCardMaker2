@@ -33,12 +33,23 @@
 			<section class="authentication-panel">
 				<header>Authentication</header>
 				<div class="section-body">
-					Using Jira On Demand?<input type="checkbox" id="jiraOnDemand"/>
-					<h3>Set your Jira Location</h3>
-			        Username: <input id="username" value=""/><br />
-			        Password: <input type="password" id="password" value=""/><br />
-					Jira Location : <input id="jiraLocation" value="https://jira.caplin.com"/>
-					<button onclick="updateJiraNavigator()">Go</button>
+					<label>
+						<span>Jira on demand</span>
+						<input type="checkbox" id="jiraOnDemand"/>
+					</label>
+					<label>
+						<span>Username</span>
+			        	<input id="username" value=""/>
+					</label>
+					<label>
+			        	<span>Password</span>
+			        	<input type="password" id="password" value=""/>
+			        </label>
+			        <label>
+			        	<span>Jira Location</span>
+						<input id="jiraLocation" value="https://jira.caplin.com"/>
+					</label>
+					<button onclick="updateJiraNavigator()">Connect</button>
 				</div>
 			</section>
 
