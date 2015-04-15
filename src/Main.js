@@ -128,7 +128,7 @@ function generateTickets() {
     var businessValue = document.getElementById("businessvalue").checked;
     var epicsEnabled = document.getElementById("epicsEnabled").checked;
 
-	oApp = new jira.App(document.getElementById('tickets'), jiraUrl, null, color, qrcode, parentDescription, componentDescription, tagDescription, businessValue, epicsEnabled);
+	oApp = new jira.App(document.getElementsByClassName("page-to-print")[0], jiraUrl, null, color, qrcode, parentDescription, componentDescription, tagDescription, businessValue, epicsEnabled);
 	oApp.requestIssues(checklistToDisplay);
 }
 
@@ -238,7 +238,7 @@ function hideInterface() {
 }
 
 function clearTickets() {
-	document.getElementById("tickets").innerHTML = "";
+	document.getElementsByClassName("page-to-print")[0].innerHTML = "";
 }
 
 function showInterface() {
@@ -281,7 +281,7 @@ function updateJiraNavigator() {
 }
 
 
-// setConfigFromCookies();
+setConfigFromCookies();
 drawExampleCard();
 window.onhashchange = function() {
 	if (window.location.hash !== "#tickets") {
