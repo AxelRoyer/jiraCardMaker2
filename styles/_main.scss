@@ -1,26 +1,62 @@
 html, body {
-	background-color: white;
-	margin: 0;
+	background: $background;
 	height: 100%;
+	font-family: arial;
 }
 
-@page {
-	margin: 0;
-}
-
-#ticketManager {
-	margin: 10px;
-	padding: 10px;
-	background-color: #DDD;
-}
-
-#optionsPanel {
-	float: right;
+* {
+	box-sizing: border-box;
 }
 
 .list {
 	height: 300px;
 	overflow: auto;
 	background-color: #BBB;
-	margin: 5%;
+}
+
+body > header {
+	background: $main-header;
+	text-align: center;
+	height: 2rem;
+	line-height: 2rem;
+	border-bottom: 0.2rem solid #CC6600;
+	color: $main-header-color;
+}
+
+section > header {
+	color: $section-header-color;
+	background: $section-header-background;
+	height: 1.5rem;
+	line-height: 1.5rem;
+	text-align: center;
+	border-radius: 0.5rem 0.5rem 0 0;
+}
+
+section > .section-body {
+	padding: 0.5rem;
+}
+
+.selection-panel,
+.jira-list-panel {
+	display: none;
+}
+
+.selection-panel,
+.jira-list-panel,
+.options-panel,
+.authentication-panel {
+	background-color: #BCBCBC;
+  	border-radius: 0.5rem;
+  	margin: 0.5rem;
+}
+
+.left-side {
+	display: inline-block;
+	width: 60%;
+}
+
+.right-side {
+	display: inline-block;
+	width: 25%;
+	position: absolute;
 }

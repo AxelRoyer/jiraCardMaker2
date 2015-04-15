@@ -54,7 +54,7 @@ JiraNavigator.prototype.getNavigationTypes = function() {
 }
 
 JiraNavigator.prototype.clearJiraList = function(jiras) {
-	var stageThree = document.getElementById("stageThree");
+	var stageThree = document.getElementsByClassName("jira-list-panel")[0];
 	stageThree.style.display = "none";
 }
 

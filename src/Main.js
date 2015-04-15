@@ -107,7 +107,7 @@ function toggleOptions()
 }
 
 function receiveJiraCallback(issues) {
-	var stageThree = document.getElementById("stageThree");
+	var stageThree = document.getElementsByClassName("jira-list-panel")[0];
 	stageThree.style.display = "block";
 
 	clearTimeout(jiraRequestedTimeout);
@@ -135,9 +135,9 @@ function generateTickets() {
 }
 
 function drawExampleCard() {
+	var exampleCardContainer = document.getElementsByClassName("example-card")[0];
 
-	if (document.getElementById("example-card") != null ) {
-
+	if (exampleCardContainer != null ) {
 		var card = {
 			"issueId": "PCTCUT-511",
 			"issueUrl": "https://jira.caplin.com/browse/PCTCUT-511",
@@ -182,8 +182,7 @@ function drawExampleCard() {
 			document.getElementById("qrcode").checked,
 			document.getElementById("businessvalue").checked);
 
-		document.getElementById("example-card").innerHTML = "";
-		document.getElementById("example-card").appendChild(view.getElement());
+		exampleCardContainer.appendChild(view.getElement());
 	}
 }
 
@@ -273,7 +272,7 @@ function updateJiraNavigator() {
 			return;
 		}
 
-		var stageTwo = document.getElementById("stageTwo");
+		var stageTwo = document.getElementsByClassName("selection-panel")[0];
 		stageTwo.style.display = "block";
 		
 		jn = new JiraNavigator(location);
@@ -283,7 +282,7 @@ function updateJiraNavigator() {
 }
 
 
-setConfigFromCookies();
+// setConfigFromCookies();
 drawExampleCard();
 window.onhashchange = function() {
 	if (window.location.hash !== "#tickets") {
