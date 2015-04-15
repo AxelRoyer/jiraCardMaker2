@@ -1,7 +1,7 @@
 html, body {
-	background: $background;
 	height: 100%;
 	font-family: arial;
+	background-color: white;
 }
 
 * {
@@ -9,12 +9,16 @@ html, body {
 }
 
 .list {
-	height: 300px;
+	max-height: 500px;
 	overflow: auto;
-	background-color: #BBB;
 }
 
-body > header {
+.request-page {
+	background: $background;
+	height: 100%;
+}
+
+.request-page > header {
 	background: $main-header;
 	text-align: center;
 	height: 2rem;
@@ -44,19 +48,33 @@ section > .section-body {
 .selection-panel,
 .jira-list-panel,
 .options-panel,
+.example-panel,
 .authentication-panel {
+	margin-top: 0.5rem;
 	background-color: #BCBCBC;
   	border-radius: 0.5rem;
-  	margin: 0.5rem;
 }
 
 .left-side {
 	display: inline-block;
-	width: 60%;
+	width: calc(100% - 380px);
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
 }
 
 .right-side {
 	display: inline-block;
-	width: 25%;
+	width: 350px;
 	position: absolute;
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
+}
+
+.ticket {
+	display: inline-block;
+  	position: relative;
+}
+
+.page-to-print .ticket {
+  	margin: 0.5rem;
 }

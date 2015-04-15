@@ -234,7 +234,7 @@ function setConfigFromCookies() {
 }
 
 function hideInterface() {
-	var interf = document.getElementById("ticketManager");
+	var interf = document.getElementsByClassName("request-page")[0];
 	interf.style.display = "none";
 }
 
@@ -244,7 +244,7 @@ function clearTickets() {
 
 function showInterface() {
 	clearTickets();
-	var interf = document.getElementById("ticketManager");
+	var interf = document.getElementsByClassName("request-page")[0];
 	interf.style.display = "block";
 }
 

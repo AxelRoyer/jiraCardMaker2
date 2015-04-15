@@ -17,13 +17,8 @@ select {
 
 .ticket {
 	background-color: white;
-	margin: auto;
-	float: left;
 	width: 335px;
-	position: relative;
-	margin-left: 20px;
 	height: 320px;
-	margin-top: 20px;
 	border: 2px solid black;
 }
 
@@ -102,7 +97,7 @@ select {
 	float: left;
 	outline: 2px solid black;
 	vertical-align: middle;
-	height: 50px;
+	height: 100%;
 	font-size: 12px;
 	line-height: 50px;
 	display: inline-block;

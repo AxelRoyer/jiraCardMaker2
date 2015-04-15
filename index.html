@@ -27,76 +27,80 @@
 	<link rel="stylesheet" type="text/css" href="styles/styles.css">
 </head>
 <body>
-	<header>Jira Ticket Generator</header>
-	<section id="tickets"></section>
-
-	<section class="left-side">
-		<section class="authentication-panel">
-			<header>Authentication</header>
-			<div class="section-body">
-				Using Jira On Demand?<input type="checkbox" id="jiraOnDemand"/>
-				<h3>Set your Jira Location</h3>
-		        Username: <input id="username" value=""/><br />
-		        Password: <input type="password" id="password" value=""/><br />
-				Jira Location : <input id="jiraLocation" value="https://jira.caplin.com"/>
-				<button onclick="updateJiraNavigator()">Go</button>
-			</div>
-		</section>
-
-		<section class="selection-panel">
-			<header>Jira card selection</header>
-			<div class="section-body">
-				<select id="selectionMethod" data-bind="visible: selectionMethod.visible, options: selectionMethod.options, optionsText: 'text', value: selectionMethod.value, event: {change: selectionMethod.change}"></select>
-
-				<select id="projectsDropDown" data-bind="visible: projectsDropDown.visible, options: projectsDropDown.options, optionsText: 'text', value: projectsDropDown.value, event: {change: projectsDropDown.change}"></select>
-
-				<select id="sprintsDropDown" data-bind="visible: sprintsDropDown.visible, options: sprintsDropDown.options, optionsText: 'text', value: sprintsDropDown.value, event: {change: sprintsDropDown.change}"></select>
-
-				<select id="rapidBoardsDropDown" data-bind="visible: rapidBoardsDropDown.visible, options: rapidBoardsDropDown.options, optionsText: 'text', value: rapidBoardsDropDown.value, event: {change: rapidBoardsDropDown.change}"></select>
-
-		        <select id="rapidBoardSprintsDropDown" data-bind="visible: rapidBoardSprintsDropDown.visible, options: rapidBoardSprintsDropDown.options, optionsText: 'text', value: rapidBoardSprintsDropDown.value, event: {change: rapidBoardSprintsDropDown.change}"></select>
-		        <input id="csvJiras" data-bind="visible: csvJirasField.visible, value: csvJirasField.value, valueUpdate: 'afterkeydown', event: {keyup: csvJirasField.change}" />
-
-		        <select id="xBoardDropDown" data-bind="visible: xBoardDropDown.visible, options: xBoardDropDown.options, optionsText: 'text', value: xBoardDropDown.value, event: {change: xBoardDropDown.change}"></select>
-
-		        <select id="xBoardSprints" data-bind="visible: xBoardSprintsDropDown.visible, options: xBoardSprintsDropDown.options, optionsText: 'text', value: xBoardSprintsDropDown.value, event: {change: xBoardSprintsDropDown.change}"></select>
-		    </div>
-		</section>
-
-		<section class="jira-list-panel">
-			<header>Jira List</header>
-			<div class="section-body">
-				<div class="list" id="jiraList">
-					<ul id="jiraListUrl"></ul>
+	<section class="request-page">
+		<header>Jira Ticket Generator</header>
+		<section class="left-side">
+			<section class="authentication-panel">
+				<header>Authentication</header>
+				<div class="section-body">
+					Using Jira On Demand?<input type="checkbox" id="jiraOnDemand"/>
+					<h3>Set your Jira Location</h3>
+			        Username: <input id="username" value=""/><br />
+			        Password: <input type="password" id="password" value=""/><br />
+					Jira Location : <input id="jiraLocation" value="https://jira.caplin.com"/>
+					<button onclick="updateJiraNavigator()">Go</button>
 				</div>
-				<button onClick="generateTickets()">Generate!</button>
-				<div id="loading" style="display:none"><br />Loading...</div>
-				<div style="clear:both"></div>
-				<div id="jiraNavigator"></div>
-			</div>
+			</section>
+
+			<section class="selection-panel">
+				<header>Jira card selection</header>
+				<div class="section-body">
+					<select id="selectionMethod" data-bind="visible: selectionMethod.visible, options: selectionMethod.options, optionsText: 'text', value: selectionMethod.value, event: {change: selectionMethod.change}"></select>
+
+					<select id="projectsDropDown" data-bind="visible: projectsDropDown.visible, options: projectsDropDown.options, optionsText: 'text', value: projectsDropDown.value, event: {change: projectsDropDown.change}"></select>
+
+					<select id="sprintsDropDown" data-bind="visible: sprintsDropDown.visible, options: sprintsDropDown.options, optionsText: 'text', value: sprintsDropDown.value, event: {change: sprintsDropDown.change}"></select>
+
+					<select id="rapidBoardsDropDown" data-bind="visible: rapidBoardsDropDown.visible, options: rapidBoardsDropDown.options, optionsText: 'text', value: rapidBoardsDropDown.value, event: {change: rapidBoardsDropDown.change}"></select>
+
+			        <select id="rapidBoardSprintsDropDown" data-bind="visible: rapidBoardSprintsDropDown.visible, options: rapidBoardSprintsDropDown.options, optionsText: 'text', value: rapidBoardSprintsDropDown.value, event: {change: rapidBoardSprintsDropDown.change}"></select>
+			        <input id="csvJiras" data-bind="visible: csvJirasField.visible, value: csvJirasField.value, valueUpdate: 'afterkeydown', event: {keyup: csvJirasField.change}" />
+
+			        <select id="xBoardDropDown" data-bind="visible: xBoardDropDown.visible, options: xBoardDropDown.options, optionsText: 'text', value: xBoardDropDown.value, event: {change: xBoardDropDown.change}"></select>
+
+			        <select id="xBoardSprints" data-bind="visible: xBoardSprintsDropDown.visible, options: xBoardSprintsDropDown.options, optionsText: 'text', value: xBoardSprintsDropDown.value, event: {change: xBoardSprintsDropDown.change}"></select>
+			    </div>
+			</section>
+
+			<section class="jira-list-panel">
+				<header>Jira List</header>
+				<div class="section-body">
+					<div class="list" id="jiraList">
+						<ul id="jiraListUrl"></ul>
+					</div>
+					<button onClick="generateTickets()">Generate!</button>
+					<div id="loading" style="display:none"><br />Loading...</div>
+					<div style="clear:both"></div>
+					<div id="jiraNavigator"></div>
+				</div>
+			</section>
+		</section>
+
+		<section class="right-side">
+			<section class="example-panel">
+				<header>Example card</header>
+				<div class="section-body example-card"></div>
+			</section>
+
+			<section class="options-panel">
+				<header>Options</header>
+				<div class="section-body">
+					<ul>
+						<li>Color Enabled: <input checked type="checkbox" id="color" onclick="drawExampleCard()" /></li>
+						<li>QR Code Enabled: <input checked type="checkbox" id="qrcode" onclick="drawExampleCard()" /></li>
+						<li>Show Parent Description: <input checked type="checkbox" id="parentdescription" onclick="drawExampleCard()"/></li>
+						<li>Show Component Description: <input checked type="checkbox" id="componentdescription" onclick="drawExampleCard()" /></li>
+						<li>Show Tag Description: <input type="checkbox" id="tagdescription" onclick="drawExampleCard()"/></li>
+		                <li>Show Business Value: <input type="checkbox" id="businessvalue" onclick="drawExampleCard()"/></li>
+						<li>Show Epics: <input type="checkbox" id="epicsEnabled" onclick="drawExampleCard()"/></li>
+					</ul>
+				</div>
+			</section>
 		</section>
 	</section>
 
-	<section class="right-side">
-		<section class="example-panel">
-			<header>Example card</header>
-			<div class="section-body example-card"></div>
-		</section>
-
-		<section class="options-panel">
-			<header>Options</header>
-			<div class="section-body">
-				<ul>
-					<li>Color Enabled: <input checked type="checkbox" id="color" onclick="drawExampleCard()" /></li>
-					<li>QR Code Enabled: <input checked type="checkbox" id="qrcode" onclick="drawExampleCard()" /></li>
-					<li>Show Parent Description: <input checked type="checkbox" id="parentdescription" onclick="drawExampleCard()"/></li>
-					<li>Show Component Description: <input checked type="checkbox" id="componentdescription" onclick="drawExampleCard()" /></li>
-					<li>Show Tag Description: <input type="checkbox" id="tagdescription" onclick="drawExampleCard()"/></li>
-	                <li>Show Business Value: <input type="checkbox" id="businessvalue" onclick="drawExampleCard()"/></li>
-					<li>Show Epics: <input type="checkbox" id="epicsEnabled" onclick="drawExampleCard()"/></li>
-				</ul>
-			</div>
-		</section>
+	<section class="page-to-print">
+			<section id="tickets"></section>
 	</section>
 
 	<script type="text/javascript" src="src/Main.js"></script>
