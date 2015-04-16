@@ -4,6 +4,15 @@ $ticket-border: 2px solid black !default;
 
 $ticket-header-height: 50px;
 
+.ticket {
+	display: inline-block;
+  	position: relative;
+}
+
+.page-to-print .ticket {
+  	margin: 0.5rem;
+}
+
 .page {
 	page-break-before: always;
 	clear: both;

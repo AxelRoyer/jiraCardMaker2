@@ -58,13 +58,13 @@ section > header {
   text-align: center;
   border-radius: 0.5rem 0.5rem 0 0; }
 
-section > .section-body {
+section > .panel-body {
   padding: 0.5rem; }
 
 .selection-panel, .jira-list-panel {
   display: none; }
 
-.selection-panel, .jira-list-panel, .options-panel, .example-panel, .authentication-panel {
+.panel {
   margin-top: 0.5rem;
   background-color: #BCBCBC;
   border-radius: 0.5rem; }
@@ -82,13 +82,6 @@ section > .section-body {
   margin-left: 0.5rem;
   margin-right: 0.5rem; }
 
-.ticket {
-  display: inline-block;
-  position: relative; }
-
-.page-to-print .ticket {
-  margin: 0.5rem; }
-
 label {
   display: block; }
 
@@ -103,6 +96,13 @@ label {
   padding-left: 10px;
   padding-right: 10px;
   margin-top: 10px; }
+
+.ticket {
+  display: inline-block;
+  position: relative; }
+
+.page-to-print .ticket {
+  margin: 0.5rem; }
 
 .page {
   page-break-before: always;

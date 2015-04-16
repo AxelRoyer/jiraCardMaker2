@@ -30,9 +30,9 @@
 	<section class="request-page">
 		<header>Jira Ticket Generator</header>
 		<section class="left-side">
-			<section class="authentication-panel">
+			<section class="authentication-panel panel">
 				<header>Authentication</header>
-				<div class="section-body">
+				<div class="panel-body">
 					<label>
 						<span>Jira on demand</span>
 						<input type="checkbox" id="jiraOnDemand"/>
@@ -53,9 +53,9 @@
 				</div>
 			</section>
 
-			<section class="selection-panel">
+			<section class="selection-panel panel">
 				<header>Jira card selection</header>
-				<div class="section-body">
+				<div class="panel-body">
 					<select id="selectionMethod" data-bind="visible: selectionMethod.visible, options: selectionMethod.options, optionsText: 'text', value: selectionMethod.value, event: {change: selectionMethod.change}"></select>
 
 					<select id="projectsDropDown" data-bind="visible: projectsDropDown.visible, options: projectsDropDown.options, optionsText: 'text', value: projectsDropDown.value, event: {change: projectsDropDown.change}"></select>
@@ -73,9 +73,9 @@
 			    </div>
 			</section>
 
-			<section class="jira-list-panel">
+			<section class="jira-list-panel panel">
 				<header>Jira List</header>
-				<div class="section-body">
+				<div class="panel-body">
 					<div class="list" id="jiraList">
 						<ul id="jiraListUrl"></ul>
 					</div>
@@ -88,14 +88,14 @@
 		</section>
 
 		<section class="right-side">
-			<section class="example-panel">
+			<section class="example-panel panel">
 				<header>Example card</header>
 				<div class="section-body example-card"></div>
 			</section>
 
-			<section class="options-panel">
+			<section class="options-panel panel">
 				<header>Options</header>
-				<div class="section-body">
+				<div class="panel-body">
 					<label>
 						<input checked type="checkbox" id="color" onclick="drawExampleCard()"/>
 						<span>Color</span>
