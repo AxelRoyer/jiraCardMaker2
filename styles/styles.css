@@ -119,8 +119,8 @@ select {
 
 .ticket {
   background-color: white;
-  width: 335px;
-  height: 320px;
+  width: 310px;
+  height: 310px;
   border: 2px solid black; }
 
 .epic {
@@ -209,7 +209,7 @@ select {
 
 .qrcode {
   width: 100%;
-  height: 88px; }
+  height: 74px; }
 
 .qrcode img {
   margin-top: 20px;
