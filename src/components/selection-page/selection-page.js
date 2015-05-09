@@ -1,7 +1,11 @@
 "use strict";
 
+var Emitr = require("./../../services/emitr");
+
 var templateService = require("./../../services/templateService");
 var SelectionPage = Object.create(HTMLElement.prototype);
+
+Emitr(SelectionPage);
 
 SelectionPage.createdCallback = function() {
 	this.authenticationPanel = null;

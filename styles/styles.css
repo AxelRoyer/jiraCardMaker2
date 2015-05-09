@@ -34,68 +34,73 @@ html, body {
 * {
   box-sizing: border-box; }
 
-.list {
-  max-height: 500px;
-  overflow: auto; }
-
-.request-page {
-  background: #E9E9E9;
+jcm-app {
+  display: block;
   height: 100%; }
 
-.request-page > header {
-  background: #FF9900;
-  text-align: center;
-  height: 2rem;
-  line-height: 2rem;
-  border-bottom: 0.2rem solid #CC6600;
-  color: #424242; }
+jcm-authentication-panel,
+jcm-sprint-selection-panel,
+jcm-task-selection-panel {
+  margin: 0.5rem; }
 
-section > header {
+panel-header {
   color: #E9E9E9;
   background: #424242;
   height: 1.5rem;
   line-height: 1.5rem;
   text-align: center;
-  border-radius: 0.5rem 0.5rem 0 0; }
-
-section > .panel-body {
-  padding: 0.5rem; }
-
-.selection-panel, .jira-list-panel {
-  display: none; }
-
-.panel {
-  margin-top: 0.5rem;
-  background-color: #BCBCBC;
-  border-radius: 0.5rem; }
-
-.left-side {
-  display: inline-block;
-  width: calc(100% - 380px);
-  margin-left: 0.5rem;
-  margin-right: 0.5rem; }
-
-.right-side {
-  display: inline-block;
-  width: 350px;
-  position: absolute;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem; }
-
-label {
+  border-radius: 0.5rem 0.5rem 0 0;
   display: block; }
 
-.authentication-panel span {
-  display: inline-block;
-  width: 130px; }
+panel-body {
+  display: block;
+  padding: 0.5rem;
+  background: silver;
+  border-radius: 0 0 0.5rem 0.5rem; }
 
-.authentication-panel button {
-  background-color: #FF9900;
-  border: none;
-  height: 30px;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-top: 10px; }
+selection-page {
+  display: block;
+  height: 100%;
+  background: #E9E9E9; }
+  selection-page > header {
+    background: #FF9900;
+    text-align: center;
+    height: 2rem;
+    line-height: 2rem;
+    border-bottom: 0.2rem solid #CC6600;
+    color: #424242; }
+  selection-page > .left-side {
+    display: inline-block;
+    width: calc(100% - 380px);
+    margin-left: 0.5rem;
+    margin-right: 0.5rem; }
+  selection-page > .right-side {
+    display: inline-block;
+    width: 350px;
+    position: absolute;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem; }
+
+jcm-authentication-panel {
+  display: block; }
+  jcm-authentication-panel span {
+    display: inline-block;
+    width: 130px; }
+  jcm-authentication-panel button {
+    background-color: #FF9900;
+    border: none;
+    height: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 10px; }
+  jcm-authentication-panel label {
+    display: block; }
+
+jcm-sprint-selection-panel {
+  display: block; }
+
+jcm-task-selection-panel {
+  display: block; }
 
 .ticket {
   display: inline-block;

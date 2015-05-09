@@ -26,7 +26,7 @@ gulp.task('sass-build', function () {
       includePaths: bourbon.includePaths
     }))
     .on("error", errorAlert)
-    .pipe(gulp.dest('./style'));
+    .pipe(gulp.dest('./styles'));
 });
 
 gulp.task('sass-watch', function () {

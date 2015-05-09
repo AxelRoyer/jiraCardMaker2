@@ -1,13 +1,21 @@
-.authentication-panel span {
-	display: inline-block;
-	width: 130px;
-}
+jcm-authentication-panel {
+	display: block;
 
-.authentication-panel button {
-	background-color: $section-button-background;
-	border: none;
-	height: 30px;
-	padding-left: 10px;
-	padding-right: 10px;
-	margin-top: 10px;
+	span {
+		display: inline-block;
+		width: 130px;
+	}
+
+	button {
+		background-color: $section-button-background;
+		border: none;
+		height: 30px;
+		padding-left: 10px;
+		padding-right: 10px;
+		margin-top: 10px;
+	}
+	
+	label {
+		display: block;
+	}
 }

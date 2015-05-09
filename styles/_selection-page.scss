@@ -1,0 +1,29 @@
+selection-page {
+	display: block;
+	height: 100%;
+	background: $background;
+
+	> header {
+		background: $main-header;
+		text-align: center;
+		height: 2rem;
+		line-height: 2rem;
+		border-bottom: 0.2rem solid #CC6600;
+		color: $main-header-color;
+	}
+
+	> .left-side {
+		display: inline-block;
+		width: calc(100% - 380px);
+		margin-left: 0.5rem;
+		margin-right: 0.5rem;
+	}
+
+	> .right-side {
+		display: inline-block;
+		width: 350px;
+		position: absolute;
+		margin-left: 0.5rem;
+		margin-right: 0.5rem;
+	}
+}

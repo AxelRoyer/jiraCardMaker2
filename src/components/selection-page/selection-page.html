@@ -3,19 +3,7 @@
 	<section class="left-side">
 		<jcm-authentication-panel></jcm-authentication-panel>
 		<jcm-sprint-selection-panel></jcm-sprint-selection-panel>
-
-		<section class="jira-list-panel panel">
-			<header>Jira List</header>
-			<div class="panel-body">
-				<div class="list" id="jiraList">
-					<ul id="jiraListUrl"></ul>
-				</div>
-				<button onClick="generateTickets()">Generate!</button>
-				<div id="loading" style="display:none"><br />Loading...</div>
-				<div style="clear:both"></div>
-				<div id="jiraNavigator"></div>
-			</div>
-		</section>
+		<jcm-task-selection-panel></jcm-task-selection-panel>
 	</section>
 
 	<section class="right-side">

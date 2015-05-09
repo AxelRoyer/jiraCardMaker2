@@ -8,64 +8,30 @@ html, body {
 	box-sizing: border-box;
 }
 
-.list {
-	max-height: 500px;
-	overflow: auto;
-}
-
-.request-page {
-	background: $background;
+jcm-app {
+	display: block;
 	height: 100%;
 }
 
-.request-page > header {
-	background: $main-header;
-	text-align: center;
-	height: 2rem;
-	line-height: 2rem;
-	border-bottom: 0.2rem solid #CC6600;
-	color: $main-header-color;
+jcm-authentication-panel,
+jcm-sprint-selection-panel,
+jcm-task-selection-panel {
+	margin: 0.5rem;
 }
 
-section > header {
+panel-header {
 	color: $section-header-color;
 	background: $section-header-background;
 	height: 1.5rem;
 	line-height: 1.5rem;
 	text-align: center;
 	border-radius: 0.5rem 0.5rem 0 0;
-}
-
-section > .panel-body {
-	padding: 0.5rem;
-}
-
-.selection-panel,
-.jira-list-panel {
-	display: none;
-}
-
-.panel {
-	margin-top: 0.5rem;
-	background-color: #BCBCBC;
-  	border-radius: 0.5rem;
-}
-
-.left-side {
-	display: inline-block;
-	width: calc(100% - 380px);
-	margin-left: 0.5rem;
-	margin-right: 0.5rem;
-}
-
-.right-side {
-	display: inline-block;
-	width: 350px;
-	position: absolute;
-	margin-left: 0.5rem;
-	margin-right: 0.5rem;
-}
-
-label {
 	display: block;
+}
+
+panel-body {
+	display: block;
+	padding: 0.5rem;
+	background: silver;
+	border-radius: 0 0 0.5rem 0.5rem;
 }
