@@ -1,0 +1,26 @@
+loading-screen {
+	display: none;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	> .background {
+		background: black;
+		opacity: 0.5;
+		height: 100%;
+	}
+
+	> .message {
+		position: absolute;
+		padding: 1rem;
+		background: black;
+		color: white;
+		top: calc(50%);
+		left: calc(50% - 7rem);
+		width: 14rem;
+		border-radius: 0.5rem;
+		text-align: center;
+	}
+}

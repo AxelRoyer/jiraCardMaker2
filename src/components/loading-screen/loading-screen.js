@@ -1,7 +1,7 @@
 "use strict";
 
 var LoadingScreen = Object.create(HTMLElement.prototype);
-var templateService = require("./../../services/templateService");
+var templateService = require("./../../services/templateService")
 
 LoadingScreen.createdCallback = function() {
 	this.authenticationPanel = null;
@@ -20,4 +20,4 @@ LoadingScreen.hide = function() {
 	this.style.display = "none";
 };
 
-document.registerElement('jcm-sprint-selection-panel', {prototype: LoadingScreen});
+document.registerElement('loading-screen', {prototype: LoadingScreen});

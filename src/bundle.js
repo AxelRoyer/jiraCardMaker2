@@ -15,6 +15,7 @@ require("./components/task-selection-panel/task-selection-panel.js");
 require("./components/card/card.js");
 require("./components/layout-panel/layout-panel.js");
 require("./components/layout-options/layout-options.js");
+require("./components/loading-screen/loading-screen.js");
 
 var JiraCardMakerApp = Object.create(HTMLElement.prototype);
 
@@ -29,7 +30,7 @@ JiraCardMakerApp.attachedCallback = function() {
 
 document.registerElement('jcm-app', {prototype: JiraCardMakerApp});
 
-},{"./../lib/webcomponents-lite.min.js":2,"./components/authentication-panel/authentication-panel.js":3,"./components/card/card.js":4,"./components/layout-options/layout-options.js":5,"./components/layout-panel/layout-panel.js":6,"./components/selection-page/selection-page.js":7,"./components/sprint-selection-panel/sprint-selection-panel.js":8,"./components/task-selection-panel/task-selection-panel.js":9,"./events.js":10,"./services/JiraApiHandler":11,"./services/templateService":14}],2:[function(require,module,exports){
+},{"./../lib/webcomponents-lite.min.js":2,"./components/authentication-panel/authentication-panel.js":3,"./components/card/card.js":4,"./components/layout-options/layout-options.js":5,"./components/layout-panel/layout-panel.js":6,"./components/loading-screen/loading-screen.js":7,"./components/selection-page/selection-page.js":8,"./components/sprint-selection-panel/sprint-selection-panel.js":9,"./components/task-selection-panel/task-selection-panel.js":10,"./events.js":11,"./services/JiraApiHandler":12,"./services/templateService":15}],2:[function(require,module,exports){
 /**
  * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
@@ -86,7 +87,7 @@ AuthenticationPanel.onButtonClicked = function () {
 document.registerElement('jcm-authentication-panel', {prototype: AuthenticationPanel});
 
 module.exports = AuthenticationPanel;
-},{"../../events":10,"./../../services/emitr":12,"./../../services/templateService":14}],4:[function(require,module,exports){
+},{"../../events":11,"./../../services/emitr":13,"./../../services/templateService":15}],4:[function(require,module,exports){
 "use strict";
 
 var templateService = require("./../../services/templateService");
@@ -105,7 +106,7 @@ Card.updateData = function(data) {
 
 document.registerElement('jcm-card', {prototype: Card});
 
-},{"./../../services/templateService":14}],5:[function(require,module,exports){
+},{"./../../services/templateService":15}],5:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -124,7 +125,7 @@ LayoutOptions.attachedCallback = function() {
 
 document.registerElement('layout-options', {prototype: LayoutOptions});
 
-},{"./../../services/emitr":12,"./../../services/templateService":14}],6:[function(require,module,exports){
+},{"./../../services/emitr":13,"./../../services/templateService":15}],6:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -145,7 +146,32 @@ LayoutPanel.attachedCallback = function() {
 
 document.registerElement('jcm-layout-panel', {prototype: LayoutPanel});
 
-},{"./../../services/emitr":12,"./../../services/templateService":14}],7:[function(require,module,exports){
+},{"./../../services/emitr":13,"./../../services/templateService":15}],7:[function(require,module,exports){
+"use strict";
+
+var LoadingScreen = Object.create(HTMLElement.prototype);
+var templateService = require("./../../services/templateService")
+
+LoadingScreen.createdCallback = function() {
+	this.authenticationPanel = null;
+};
+
+LoadingScreen.attachedCallback = function() {
+	var template = document.importNode(templateService.getTemplate("loading-screen"), true);
+    this.appendChild(template);
+};
+
+LoadingScreen.show = function() {
+	this.style.display = "block";
+};
+
+LoadingScreen.hide = function() {
+	this.style.display = "none";
+};
+
+document.registerElement('loading-screen', {prototype: LoadingScreen});
+
+},{"./../../services/templateService":15}],8:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -160,6 +186,7 @@ Emitr(SelectionPage);
 
 SelectionPage.createdCallback = function() {
 	this.authenticationPanel = null;
+	this.loadingScreen = null;
 	this.jiraService = new JiraService();
 };
 
@@ -171,18 +198,24 @@ SelectionPage.attachedCallback = function() {
     this.authenticationPanel.on(EVENTS.AUTHENTICATION_PANEL.AUTHENTICATION_SUBMITTED, this._onAuthenticationSubmitted, this);
 
     this.sprintSelectionPanel = this.querySelector("jcm-sprint-selection-panel");
+
+    this.loadingScreen = this.querySelector("loading-screen");
 };
 
 SelectionPage._onAuthenticationSubmitted = function(parameters) {
+	this.loadingScreen.show("loading in progress");
     this.jiraService.getBoards().then(function(boards) {
     	console.log("boards", boards);
+    	this.loadingScreen.hide();
     	this._onBoardSelected(80);
     }.bind(this));
 };
 
 SelectionPage._onBoardSelected = function (boardId) {
+	this.loadingScreen.show("loading in progress");
     this.jiraService.getSprints(boardId).then(function(sprints) {
     	console.log("sprints", sprints);
+    	this.loadingScreen.hide();
     	this._onSprintSelected(0);
     }.bind(this));
 };
@@ -193,7 +226,7 @@ SelectionPage._onSprintSelected = function (sprintId) {
 
 document.registerElement('selection-page', {prototype: SelectionPage});
 
-},{"../../events":10,"./../../services/emitr":12,"./../../services/jiraService":13,"./../../services/templateService":14}],8:[function(require,module,exports){
+},{"../../events":11,"./../../services/emitr":13,"./../../services/jiraService":14,"./../../services/templateService":15}],9:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -214,7 +247,7 @@ SprintSelectionPanel.attachedCallback = function() {
 
 document.registerElement('jcm-sprint-selection-panel', {prototype: SprintSelectionPanel});
 
-},{"./../../services/emitr":12,"./../../services/templateService":14}],9:[function(require,module,exports){
+},{"./../../services/emitr":13,"./../../services/templateService":15}],10:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -235,13 +268,13 @@ TaskSelectionPanel.attachedCallback = function() {
 
 document.registerElement('jcm-task-selection-panel', {prototype: TaskSelectionPanel});
 
-},{"./../../services/emitr":12,"./../../services/templateService":14}],10:[function(require,module,exports){
+},{"./../../services/emitr":13,"./../../services/templateService":15}],11:[function(require,module,exports){
 module.exports = {
 	"AUTHENTICATION_PANEL": {
 		"AUTHENTICATION_SUBMITTED": "authentication-subitted"
 	}
 };
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var JiraApiHandler = function(jiraUrl, listener) {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
@@ -432,7 +465,7 @@ JiraApiHandler.prototype.getCallbackName = function() {
 }
 
 module.exports = JiraApiHandler;
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 
 module.exports = function (target) {
@@ -472,7 +505,7 @@ module.exports = function (target) {
     };
 }
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var JiraService = function() {
 	this.username = "axelrb";
 	this.password = "ctdSeVDp:)";
@@ -536,7 +569,7 @@ JiraService.prototype.getTasks = function (sprintId) {
 };
 
 module.exports = JiraService;
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 var templateService = {};
 
 templateService.getTemplate = function(id) {
