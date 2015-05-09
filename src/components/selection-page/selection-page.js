@@ -12,10 +12,6 @@ SelectionPage.attachedCallback = function() {
     this.appendChild(template);
 };
 
-SelectionPage.connect = function (parameters) {
-	debugger;
-};
-
 SelectionPage.onReleaseButtonClicked = function() {
 	this.authenticationPanel.off("authentication-complete", this.connect, this);
 };

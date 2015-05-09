@@ -23,6 +23,7 @@ require("./services/JiraCommunicationHandler.js");
 
 require("./components/authentication-panel/authentication-panel.js");
 require("./components/selection-page/selection-page.js");
+require("./components/sprint-selection-panel/sprint-selection-panel.js");
 
 var JiraCardMakerApp = Object.create(HTMLElement.prototype);
 

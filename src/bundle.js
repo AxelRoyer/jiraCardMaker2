@@ -24,6 +24,7 @@ require("./services/JiraCommunicationHandler.js");
 
 require("./components/authentication-panel/authentication-panel.js");
 require("./components/selection-page/selection-page.js");
+require("./components/sprint-selection-panel/sprint-selection-panel.js");
 
 var JiraCardMakerApp = Object.create(HTMLElement.prototype);
 
@@ -50,7 +51,7 @@ JiraCardMakerApp.onReleaseButtonClicked = function() {
 
 document.registerElement('jcm-app', {prototype: JiraCardMakerApp});
 
-},{"./../lib/knockout.js":2,"./../lib/webcomponents-lite.min.js":3,"./Card":4,"./CardView":5,"./IssueChecklistHandler":6,"./RapidBoardHandler":7,"./SelectUtilities":8,"./components/authentication-panel/authentication-panel.js":9,"./components/selection-page/selection-page.js":10,"./navigators/CSVNavigator.js":11,"./navigators/FixVersionNavigator.js":12,"./navigators/JiraNavigator":13,"./navigators/RapidBoardNavigator.js":14,"./navigators/XBoardNavigator.js":15,"./services/JiraApi.js":16,"./services/JiraApiHandler":17,"./services/JiraCommunicationHandler.js":18,"./services/templateService":20}],2:[function(require,module,exports){
+},{"./../lib/knockout.js":2,"./../lib/webcomponents-lite.min.js":3,"./Card":4,"./CardView":5,"./IssueChecklistHandler":6,"./RapidBoardHandler":7,"./SelectUtilities":8,"./components/authentication-panel/authentication-panel.js":9,"./components/selection-page/selection-page.js":10,"./components/sprint-selection-panel/sprint-selection-panel.js":11,"./navigators/CSVNavigator.js":12,"./navigators/FixVersionNavigator.js":13,"./navigators/JiraNavigator":14,"./navigators/RapidBoardNavigator.js":15,"./navigators/XBoardNavigator.js":16,"./services/JiraApi.js":17,"./services/JiraApiHandler":18,"./services/JiraCommunicationHandler.js":19,"./services/templateService":21}],2:[function(require,module,exports){
 // Knockout JavaScript library v2.3.0
 // (c) Steven Sanderson - http://knockoutjs.com/
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
@@ -509,7 +510,7 @@ AuthenticationPanel.onButtonClicked = function () {
 document.registerElement('jcm-authentication-panel', {prototype: AuthenticationPanel});
 
 module.exports = AuthenticationPanel;
-},{"./../../services/emitr":19,"./../../services/templateService":20}],10:[function(require,module,exports){
+},{"./../../services/emitr":20,"./../../services/templateService":21}],10:[function(require,module,exports){
 "use strict";
 
 var templateService = require("./../../services/templateService");
@@ -524,17 +525,30 @@ SelectionPage.attachedCallback = function() {
     this.appendChild(template);
 };
 
-SelectionPage.connect = function (parameters) {
-	debugger;
-};
-
 SelectionPage.onReleaseButtonClicked = function() {
 	this.authenticationPanel.off("authentication-complete", this.connect, this);
 };
 
 document.registerElement('selection-page', {prototype: SelectionPage});
 
-},{"./../../services/templateService":20}],11:[function(require,module,exports){
+},{"./../../services/templateService":21}],11:[function(require,module,exports){
+"use strict";
+
+var SprintSelectionPanel = Object.create(HTMLElement.prototype);
+var templateService = require("./../../services/templateService");
+
+SprintSelectionPanel.createdCallback = function() {
+	this.authenticationPanel = null;
+};
+
+SprintSelectionPanel.attachedCallback = function() {
+	var template = document.importNode(templateService.getTemplate("sprint-selection-panel"), true);
+    this.appendChild(template);
+};
+
+document.registerElement('jcm-sprint-selection-panel', {prototype: SprintSelectionPanel});
+
+},{"./../../services/templateService":21}],12:[function(require,module,exports){
 var CSVNavigator = function(jiraUrl, jiraNavigator) {
 	this.jiraNavigator = jiraNavigator;
     this.jiraUrl = jiraUrl;
@@ -570,7 +584,7 @@ CSVNavigator.prototype.updateJiraListWithIndividualJiras = function() {
 CSVNavigator.prototype.hideAll = function() {
 	this.csvJirasField.visible(false);
 }
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var FixVersionNavigator = function(jiraUrl, jiraNavigator) {
 	this.jiraNavigator = jiraNavigator;
     this.jiraUrl = jiraUrl;
@@ -634,7 +648,7 @@ FixVersionNavigator.prototype.receiveFixVersionsData = function(views) {
 FixVersionNavigator.prototype.receiveJiraCallback = function(jiras) {
 	this.jiraNavigator.receiveJiraCallback(jiras);
 }
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 _noneOption = {value: "none", text: "None"};
 _noneOptionArray = [this._noneOption];
 
@@ -706,7 +720,7 @@ JiraNavigator.setDropDown = function(dropDown, views, value, text) {
 		dropDown.push({value: view[value], text: view[text]});
 	}.bind(this));
 }
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 var RapidBoardNavigator = function(jiraUrl, jiraNavigator) {
 	this.jiraNavigator = jiraNavigator;
     this.jiraUrl = jiraUrl;
@@ -771,7 +785,7 @@ RapidBoardNavigator.prototype.hideAll = function() {
 RapidBoardNavigator.prototype.receiveJiraCallback = function(jiras) {
 	this.jiraNavigator.receiveJiraCallback(jiras);
 }
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var XBoardNavigator = function(jiraUrl, jiraNavigator) {
 	this.jiraNavigator = jiraNavigator;
     this.jiraUrl = jiraUrl;
@@ -891,7 +905,7 @@ XBoardNavigator.prototype.getKeyFromIssue = function(issues) {
     return returnKeys;
 }
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var JiraApi = function(domain, json, username, password) {
     this.dataType = "jsonp"
     if (json === true) {
@@ -964,7 +978,7 @@ JiraApi.prototype.getData = function(callback, type, isGreenhopper) {
     this.jch.getData(callback, requestUrl);
 }
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var JiraApiHandler = function(jiraUrl, listener) {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
@@ -1153,7 +1167,7 @@ JiraApiHandler.prototype.getCallbackName = function() {
 	}.bind(this);
 	return callbackName
 }
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 var JiraCommunicationHandler = function(domain, username, password) {
 	this.domain = domain;
 	this.username = username;
@@ -1270,7 +1284,7 @@ JiraCommunicationHandler.prototype.setAuthorizationHeader = function(xhr) {
 	var authHeader = "Basic "+btoa(this.username + ":" + this.password);
 	xhr.setRequestHeader("Authorization", authHeader);
 }
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 
 module.exports = function (target) {
@@ -1310,7 +1324,7 @@ module.exports = function (target) {
     };
 }
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var templateService = {};
 
 templateService.getTemplate = function(id) {
