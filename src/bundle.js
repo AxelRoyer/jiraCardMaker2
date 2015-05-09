@@ -10,8 +10,6 @@ require("./events.js");
 
 require("./components/authentication-panel/authentication-panel.js");
 require("./components/selection-page/selection-page.js");
-require("./components/sprint-selection-panel/sprint-selection-panel.js");
-require("./components/task-selection-panel/task-selection-panel.js");
 require("./components/card/card.js");
 require("./components/layout-panel/layout-panel.js");
 require("./components/layout-options/layout-options.js");
@@ -30,7 +28,7 @@ JiraCardMakerApp.attachedCallback = function() {
 
 document.registerElement('jcm-app', {prototype: JiraCardMakerApp});
 
-},{"./../lib/webcomponents-lite.min.js":2,"./components/authentication-panel/authentication-panel.js":3,"./components/card/card.js":4,"./components/layout-options/layout-options.js":5,"./components/layout-panel/layout-panel.js":6,"./components/loading-screen/loading-screen.js":7,"./components/selection-page/selection-page.js":8,"./components/sprint-selection-panel/sprint-selection-panel.js":9,"./components/task-selection-panel/task-selection-panel.js":10,"./events.js":11,"./services/JiraApiHandler":12,"./services/templateService":15}],2:[function(require,module,exports){
+},{"./../lib/webcomponents-lite.min.js":2,"./components/authentication-panel/authentication-panel.js":3,"./components/card/card.js":5,"./components/layout-options/layout-options.js":6,"./components/layout-panel/layout-panel.js":7,"./components/loading-screen/loading-screen.js":8,"./components/selection-page/selection-page.js":9,"./events.js":12,"./services/JiraApiHandler":13,"./services/templateService":16}],2:[function(require,module,exports){
 /**
  * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
@@ -87,7 +85,50 @@ AuthenticationPanel.onButtonClicked = function () {
 document.registerElement('jcm-authentication-panel', {prototype: AuthenticationPanel});
 
 module.exports = AuthenticationPanel;
-},{"../../events":11,"./../../services/emitr":13,"./../../services/templateService":15}],4:[function(require,module,exports){
+},{"../../events":12,"./../../services/emitr":14,"./../../services/templateService":16}],4:[function(require,module,exports){
+"use strict";
+
+var Emitr = require("./../../services/emitr");
+
+var BoardSelectionPanel = Object.create(HTMLElement.prototype);
+var templateService = require("./../../services/templateService");
+
+var EVENTS = require("../../events");
+
+Emitr(BoardSelectionPanel);
+
+BoardSelectionPanel.createdCallback = function() {
+	this.authenticationPanel = null;
+};
+
+BoardSelectionPanel.attachedCallback = function() {
+	var template = document.importNode(templateService.getTemplate("board-selection-panel"), true);
+    this.appendChild(template);
+    this.boardSelector = this.querySelector(".board-selector");
+    this.boardSelectionButton = this.querySelector("button");
+    this.boardSelectionButton.addEventListener("click", this.onBoardSelected.bind(this), false);
+};
+
+BoardSelectionPanel.setBoards = function (boards) {
+	for (var i = 0, len = boards.length ; i < len ; i++) {
+		this.boardSelector.appendChild(this._createOption(boards[i].name, boards[i].id));
+	}
+};
+
+BoardSelectionPanel.onBoardSelected = function () {
+	this.trigger(EVENTS.BOARD_PANEL.BOARD_SELECTED, this.boardSelector.value);
+};
+
+BoardSelectionPanel._createOption = function (label, value) {
+	var optionItem = document.createElement("option");
+	optionItem.value = value;
+	optionItem.textContent = label;
+	return optionItem;
+};
+
+document.registerElement('jcm-board-selection-panel', {prototype: BoardSelectionPanel});
+
+},{"../../events":12,"./../../services/emitr":14,"./../../services/templateService":16}],5:[function(require,module,exports){
 "use strict";
 
 var templateService = require("./../../services/templateService");
@@ -106,7 +147,7 @@ Card.updateData = function(data) {
 
 document.registerElement('jcm-card', {prototype: Card});
 
-},{"./../../services/templateService":15}],5:[function(require,module,exports){
+},{"./../../services/templateService":16}],6:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -125,7 +166,7 @@ LayoutOptions.attachedCallback = function() {
 
 document.registerElement('layout-options', {prototype: LayoutOptions});
 
-},{"./../../services/emitr":13,"./../../services/templateService":15}],6:[function(require,module,exports){
+},{"./../../services/emitr":14,"./../../services/templateService":16}],7:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -146,7 +187,7 @@ LayoutPanel.attachedCallback = function() {
 
 document.registerElement('jcm-layout-panel', {prototype: LayoutPanel});
 
-},{"./../../services/emitr":13,"./../../services/templateService":15}],7:[function(require,module,exports){
+},{"./../../services/emitr":14,"./../../services/templateService":16}],8:[function(require,module,exports){
 "use strict";
 
 var LoadingScreen = Object.create(HTMLElement.prototype);
@@ -171,7 +212,7 @@ LoadingScreen.hide = function() {
 
 document.registerElement('loading-screen', {prototype: LoadingScreen});
 
-},{"./../../services/templateService":15}],8:[function(require,module,exports){
+},{"./../../services/templateService":16}],9:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -181,6 +222,10 @@ var SelectionPage = Object.create(HTMLElement.prototype);
 var JiraService = require("./../../services/jiraService");
 
 var EVENTS = require("../../events");
+
+require("./../sprint-selection-panel/sprint-selection-panel.js");
+require("./../board-selection-panel/board-selection-panel.js");
+require("./../task-selection-panel/task-selection-panel.js");
 
 Emitr(SelectionPage);
 
@@ -197,7 +242,11 @@ SelectionPage.attachedCallback = function() {
     this.authenticationPanel = this.querySelector("jcm-authentication-panel");
     this.authenticationPanel.on(EVENTS.AUTHENTICATION_PANEL.AUTHENTICATION_SUBMITTED, this._onAuthenticationSubmitted, this);
 
+    this.boardSelectionPanel = this.querySelector("jcm-board-selection-panel");
+    this.boardSelectionPanel.on(EVENTS.BOARD_PANEL.BOARD_SELECTED, this._onBoardSelected, this);
+
     this.sprintSelectionPanel = this.querySelector("jcm-sprint-selection-panel");
+    this.sprintSelectionPanel.on(EVENTS.SPRINT_PANEL.SPRINT_SELECTED, this._onSprintSelected, this);
 
     this.loadingScreen = this.querySelector("loading-screen");
 };
@@ -205,34 +254,35 @@ SelectionPage.attachedCallback = function() {
 SelectionPage._onAuthenticationSubmitted = function(parameters) {
 	this.loadingScreen.show("loading in progress");
     this.jiraService.getBoards().then(function(boards) {
-    	console.log("boards", boards);
+    	this.boardSelectionPanel.setBoards(boards);
     	this.loadingScreen.hide();
-    	this._onBoardSelected(80);
     }.bind(this));
 };
 
 SelectionPage._onBoardSelected = function (boardId) {
 	this.loadingScreen.show("loading in progress");
     this.jiraService.getSprints(boardId).then(function(sprints) {
-    	console.log("sprints", sprints);
+    	this.sprintSelectionPanel.setSprints(sprints);
     	this.loadingScreen.hide();
-    	this._onSprintSelected(0);
     }.bind(this));
 };
 
 SelectionPage._onSprintSelected = function (sprintId) {
+    debugger;
     console.log(this.jiraService.getTasks(sprintId));
 };
 
 document.registerElement('selection-page', {prototype: SelectionPage});
 
-},{"../../events":11,"./../../services/emitr":13,"./../../services/jiraService":14,"./../../services/templateService":15}],9:[function(require,module,exports){
+},{"../../events":12,"./../../services/emitr":14,"./../../services/jiraService":15,"./../../services/templateService":16,"./../board-selection-panel/board-selection-panel.js":4,"./../sprint-selection-panel/sprint-selection-panel.js":10,"./../task-selection-panel/task-selection-panel.js":11}],10:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
 
 var SprintSelectionPanel = Object.create(HTMLElement.prototype);
 var templateService = require("./../../services/templateService");
+
+var EVENTS = require("../../events");
 
 Emitr(SprintSelectionPanel);
 
@@ -243,11 +293,37 @@ SprintSelectionPanel.createdCallback = function() {
 SprintSelectionPanel.attachedCallback = function() {
 	var template = document.importNode(templateService.getTemplate("sprint-selection-panel"), true);
     this.appendChild(template);
+    this.sprintSelector = this.querySelector(".sprint-selector");
+    this.sprintSelectionButton = this.querySelector("button");
+    this.sprintSelectionButton.addEventListener("click", this.onSprintSelected.bind(this), false);
+};
+
+SprintSelectionPanel.setSprints = function (sprints) {
+	for (var i = 0, len = sprints.length ; i < len ; i++) {
+		this.sprintSelector.appendChild(this._createOption(sprints[i]));
+	}
+};
+
+SprintSelectionPanel.onSprintSelected = function () {
+	this.trigger(EVENTS.SPRINT_PANEL.SPRINT_SELECTED, this.sprintSelector.value);
+};
+
+SprintSelectionPanel._createOption = function (params) {
+	var optionItem = document.createElement("option");
+	optionItem.value = params.id;
+
+	var label = params.name;
+
+	if (params.state === "ACTIVE") {
+		label = label + " (active)";
+	}
+	optionItem.textContent = label;
+	return optionItem;
 };
 
 document.registerElement('jcm-sprint-selection-panel', {prototype: SprintSelectionPanel});
 
-},{"./../../services/emitr":13,"./../../services/templateService":15}],10:[function(require,module,exports){
+},{"../../events":12,"./../../services/emitr":14,"./../../services/templateService":16}],11:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -268,13 +344,19 @@ TaskSelectionPanel.attachedCallback = function() {
 
 document.registerElement('jcm-task-selection-panel', {prototype: TaskSelectionPanel});
 
-},{"./../../services/emitr":13,"./../../services/templateService":15}],11:[function(require,module,exports){
+},{"./../../services/emitr":14,"./../../services/templateService":16}],12:[function(require,module,exports){
 module.exports = {
 	"AUTHENTICATION_PANEL": {
 		"AUTHENTICATION_SUBMITTED": "authentication-subitted"
+	},
+	"BOARD_PANEL": {
+		"BOARD_SELECTED": "board-selected"
+	},
+	"SPRINT_PANEL": {
+		"SPRINT_SELECTED": "sprint-selected"
 	}
 };
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var JiraApiHandler = function(jiraUrl, listener) {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
@@ -465,7 +547,7 @@ JiraApiHandler.prototype.getCallbackName = function() {
 }
 
 module.exports = JiraApiHandler;
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 
 module.exports = function (target) {
@@ -505,7 +587,7 @@ module.exports = function (target) {
     };
 }
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 var JiraService = function() {
 	this.username = "axelrb";
 	this.password = "ctdSeVDp:)";
@@ -565,11 +647,15 @@ JiraService.prototype.getSprints = function (rapidviewId) {
 };
 
 JiraService.prototype.getTasks = function (sprintId) {
-    return this.sprints[sprintId].issuesIds;
+    for (var i = 0, len = this.sprints.length ; i < len ; i++) {
+        if (this.sprints[i].id == sprintId) {
+            return this.sprints[i].issuesIds;
+        }
+    }
 };
 
 module.exports = JiraService;
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var templateService = {};
 
 templateService.getTemplate = function(id) {

@@ -40,6 +40,7 @@ jcm-app {
 
 jcm-authentication-panel,
 jcm-sprint-selection-panel,
+jcm-board-selection-panel,
 jcm-layout-panel,
 jcm-task-selection-panel {
   margin: 0.5rem; }
@@ -98,6 +99,9 @@ jcm-authentication-panel {
     display: block; }
 
 jcm-sprint-selection-panel {
+  display: block; }
+
+jcm-board-selection-panel {
   display: block; }
 
 jcm-task-selection-panel {

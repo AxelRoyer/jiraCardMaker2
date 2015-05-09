@@ -57,7 +57,11 @@ JiraService.prototype.getSprints = function (rapidviewId) {
 };
 
 JiraService.prototype.getTasks = function (sprintId) {
-    return this.sprints[sprintId].issuesIds;
+    for (var i = 0, len = this.sprints.length ; i < len ; i++) {
+        if (this.sprints[i].id == sprintId) {
+            return this.sprints[i].issuesIds;
+        }
+    }
 };
 
 module.exports = JiraService;
