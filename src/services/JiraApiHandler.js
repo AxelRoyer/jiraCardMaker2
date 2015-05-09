@@ -186,3 +186,5 @@ JiraApiHandler.prototype.getCallbackName = function() {
 	}.bind(this);
 	return callbackName
 }
+
+module.exports = JiraApiHandler;

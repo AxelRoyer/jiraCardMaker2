@@ -3,7 +3,7 @@ var AuthenticationPanel = Object.create(HTMLElement.prototype);
 var Emitr = require("./../../services/emitr");
 var templateService = require("./../../services/templateService");
 
-var AUTHENTICATION_COMPLETE = "authentication-complete";
+var EVENTS = require("../../events");
 
 Emitr(AuthenticationPanel);
 
@@ -24,16 +24,18 @@ AuthenticationPanel.attachedCallback = function () {
     this.password = this.querySelector(".authentication-password");
     this.url = this.querySelector(".authentication-url");
     this.jiraOnDemand = this.querySelector(".authentication-jira-on-demand");
+    this.project = this.querySelector(".authentication-project");
 
     this.button.addEventListener("click", this.onButtonClicked.bind(this), false);
 };
 
 AuthenticationPanel.onButtonClicked = function () {
-	this.trigger(AUTHENTICATION_COMPLETE, {
+	this.trigger(EVENTS.AUTHENTICATION_PANEL.AUTHENTICATION_SUBMITTED, {
 		username: this.username.value,
 		password: this.password.value,
 		url: this.url.value,
-		jiraOnDemand: this.jiraOnDemand.value
+		jiraOnDemand: this.jiraOnDemand.value,
+        project: this.project.value
 	});
 };
 
