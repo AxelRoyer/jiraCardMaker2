@@ -13,3 +13,5 @@ var Card = function (issueId, issueUrl, issueType, estimate, summary, component,
 	this.parentIssueId = parentIssueId;
     this.subtasks = subtasks;
 };
+
+module.exports = Card;

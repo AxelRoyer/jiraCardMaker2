@@ -1,79 +1,50 @@
-//This classes responsiblities:
+"use strict";
 
-//Class 1:
-//Creating the div for cards to be added to so they are on seperate pages
+var JiraApiHandler = require("./services/JiraApiHandler");
+var templateService = require("./services/templateService");
 
-//Class 2:
-//Converting JSON data to card data
+require("./../lib/webcomponents-lite.min.js");
+require("./../lib/knockout.js");
 
-var jira = {};
+require("./SelectUtilities");
+require("./CardView");
+require("./Card");
+require("./IssueChecklistHandler");
+require("./navigators/JiraNavigator");
+require("./RapidBoardHandler");
 
-jira.App = function (element, baseUrl, fixVersion, color, qrcode, parentEnabled, componentEnabled, tagEnabled, businessValue, epicsEnabled) {
-	if (baseUrl == "") {
-		alert("You need to set a valid Jira Location")
-		return;
-	}
-	this.baseUrl = baseUrl;
-	this.element = element;
-	this.colorEnabled = color;
-	this.qrcodeEnabled = qrcode;
-	this.parentDescriptionEnabled = parentEnabled;
-	this.componentEnabled = componentEnabled;
-	this.tagEnabled = tagEnabled;
-	this.businessValue = businessValue;
-    this.epicsEnabled = epicsEnabled;
-	this.cardsAdded = 0;
-	this.currentPage = null;
-    this.issueRequester = new JiraApiHandler(this.baseUrl, this);
+require("./navigators/FixVersionNavigator.js");
+require("./navigators/RapidBoardNavigator.js");
+require("./navigators/CSVNavigator.js");
+require("./navigators/XBoardNavigator.js");
+
+require("./services/JiraApi.js");
+require("./services/JiraCommunicationHandler.js");
+
+require("./components/authentication-panel/authentication-panel.js");
+require("./components/selection-page/selection-page.js");
+
+var JiraCardMakerApp = Object.create(HTMLElement.prototype);
+
+JiraCardMakerApp.createdCallback = function() {
+	this.authenticationPanel = null;
 };
 
-jira.App.prototype.requestIssues = function(selectedIssueIds) {
-	this.selectedIssueIds = selectedIssueIds;
-	this.issueRequester.requestIssues(selectedIssueIds, function(issues, issueMap) {
-        this.onIssuesAvailable(issues, issueMap);
-    }.bind(this));
+JiraCardMakerApp.attachedCallback = function() {
+	this.template = document.importNode(templateService.getTemplate("app"), true);
+    this.appendChild(this.template);
+	window.location.hash = "request";
+
+	this.authenticationPanel = document.querySelector("jcm-authentication-panel");
+	// this.authenticationPanel.on("authentication-complete", this.connect, this);
 };
 
-jira.App.prototype.onIssuesAvailable = function(issueIds, issueMap) {
-
-	for (var i = 0; i < issueIds.length; i++) {
-		var cardModel = issueMap[issueIds[i]];
-
-		//TODO: May god have mercy on my soul
-		if (cardModel.parentIssueId !== null) {
-			if (issueMap[cardModel.parentIssueId].epic !== null) {
-				cardModel.epic = issueMap[cardModel.parentIssueId].epic;
-			}
-		}
-
-		var cardView = new CardView(
-			cardModel,
-			issueMap,
-			["Doc", "Demo", "Review"],
-			this.parentDescriptionEnabled,
-			this.componentEnabled,
-			this.tagEnabled,
-			this.colorEnabled,
-			this.qrcodeEnabled,
-			this.businessValue,
-            this.epicsEnabled
-		);
-
-		this.addTicket(cardView);
-	}
+JiraCardMakerApp.connect = function (parameters) {
+	debugger;
 };
 
-jira.App.prototype.addTicket = function(card) {
-	var pageElement = this.getPageForNewCard();
-	pageElement.appendChild(card.getElement());
+JiraCardMakerApp.onReleaseButtonClicked = function() {
+	this.authenticationPanel.off("authentication-complete", this.connect, this);
 };
 
-jira.App.prototype.getPageForNewCard = function() {
-	if (this.currentPage == null || this.cardsAdded % 6 === 0) {
-		this.currentPage = document.createElement("div");
-		this.currentPage.className = "page";
-		this.element.appendChild(this.currentPage);
-	}
-	this.cardsAdded++;
-	return this.currentPage;
-};
+document.registerElement('jcm-app', {prototype: JiraCardMakerApp});

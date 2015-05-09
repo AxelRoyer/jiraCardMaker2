@@ -3,12 +3,12 @@ var sass = require('gulp-sass');
 var mocha = require('gulp-mocha');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
-var bourbon = require('bourbon');
+var bourbon = require('node-bourbon');
 
 var paths = {};
 
 paths.styles = [
-  './style/*.scss'
+  './styles/*.scss'
 ];
 
 paths.unitTests = [
@@ -16,8 +16,8 @@ paths.unitTests = [
 ];
 
 paths.jsFiles = [
-  'sources/*.js',
-  'sources/pages/*.js'
+  'src/*.js',
+  'src/pages/*.js'
 ];
 
 gulp.task('sass-build', function () {
@@ -32,7 +32,7 @@ gulp.task('sass-build', function () {
 gulp.task('sass-watch', function () {
   gulp.src(paths.styles)
     .on("error", errorAlert)
-    .pipe(gulp.dest('./style'));
+    .pipe(gulp.dest('./styles'));
   gulp.watch(paths.styles, ['sass-build'])
 });
 
@@ -44,10 +44,10 @@ gulp.task('test', function () {
 gulp.task('default', ['sass-watch']);
 
 gulp.task('js-build', function() {
-  return browserify('./sources/dbspoc.js')
+  return browserify('./src/app.js')
     .bundle()
     .pipe(source('bundle.js'))
-    .pipe(gulp.dest('./sources/'));
+    .pipe(gulp.dest('./src/'));
 });
 
 gulp.task('js-watch', function() {

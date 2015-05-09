@@ -54,3 +54,5 @@ function getChecked(className) {
 	}
 	return checklistToDisplay;
 }
+
+module.exports = IssueChecklistHandler;
