@@ -1,0 +1,61 @@
+<template>
+	<header>Jira Ticket Generator</header>
+	<section class="left-side">
+		<jcm-authentication-panel></jcm-authentication-panel>
+		<jcm-sprint-selection-panel></jcm-sprint-selection-panel>
+
+		<section class="jira-list-panel panel">
+			<header>Jira List</header>
+			<div class="panel-body">
+				<div class="list" id="jiraList">
+					<ul id="jiraListUrl"></ul>
+				</div>
+				<button onClick="generateTickets()">Generate!</button>
+				<div id="loading" style="display:none"><br />Loading...</div>
+				<div style="clear:both"></div>
+				<div id="jiraNavigator"></div>
+			</div>
+		</section>
+	</section>
+
+	<section class="right-side">
+		<section class="example-panel panel">
+			<header>Example card</header>
+			<div class="section-body example-card"></div>
+		</section>
+
+		<section class="options-panel panel">
+			<header>Options</header>
+			<div class="panel-body">
+				<label>
+					<input checked type="checkbox" id="color" onclick="drawExampleCard()"/>
+					<span>Color</span>
+				</label>
+				<label>
+					<input checked type="checkbox" id="qrcode" onclick="drawExampleCard()"/>
+					<span>QR Code</span>
+				</label>
+				<label>
+					<input checked type="checkbox" id="parentdescription" onclick="drawExampleCard()"/>
+					<span>Parent title</span>
+				<label>
+				<label>
+					<input checked type="checkbox" id="componentdescription" onclick="drawExampleCard()"/>
+					<span>Component description</span>
+				</label>
+				<label>
+					<input type="checkbox" id="tagdescription" onclick="drawExampleCard()"/>
+					<span>Tag Description</span>
+				</label>
+				<label>
+					<input type="checkbox" id="businessvalue" onclick="drawExampleCard()"/>
+                	<span>Business Value</span>
+                </label>
+                <label>
+                	<input type="checkbox" id="epicsEnabled" onclick="drawExampleCard()"/>
+					<span>Epics name</span>
+				</label>
+			</div>
+		</section>
+	</section>
+</template>
