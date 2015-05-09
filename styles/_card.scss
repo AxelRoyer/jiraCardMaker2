@@ -1,8 +1,17 @@
-$ticket-width: 335px !default;
-$ticket-height: 320px!default;
+$ticket-width: 310px !default;
+$ticket-height: 300px!default;
 $ticket-border: 2px solid black !default;
 
 $ticket-header-height: 50px;
+
+jcm-card {
+	display: block;
+	width: $ticket-width;
+	height: $ticket-height;
+	background-color: white;
+	border: $ticket-border;
+	margin: 0 auto;
+}
 
 .ticket {
 	display: inline-block;

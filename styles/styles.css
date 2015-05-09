@@ -40,6 +40,7 @@ jcm-app {
 
 jcm-authentication-panel,
 jcm-sprint-selection-panel,
+jcm-layout-panel,
 jcm-task-selection-panel {
   margin: 0.5rem; }
 
@@ -101,6 +102,17 @@ jcm-sprint-selection-panel {
 
 jcm-task-selection-panel {
   display: block; }
+
+jcm-layout-panel {
+  display: block; }
+
+jcm-card {
+  display: block;
+  width: 310px;
+  height: 300px;
+  background-color: white;
+  border: 2px solid black;
+  margin: 0 auto; }
 
 .ticket {
   display: inline-block;
@@ -275,8 +287,8 @@ select {
   clear: both; }
 
 .ticket {
-  width: 335px;
-  height: 320px;
+  width: 310px;
+  height: 300px;
   border: 2px solid black; }
 
 /* row and column */

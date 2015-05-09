@@ -25,6 +25,9 @@ require("./components/authentication-panel/authentication-panel.js");
 require("./components/selection-page/selection-page.js");
 require("./components/sprint-selection-panel/sprint-selection-panel.js");
 require("./components/task-selection-panel/task-selection-panel.js");
+require("./components/card/card.js");
+require("./components/layout-panel/layout-panel.js");
+require("./components/layout-options/layout-options.js");
 
 var JiraCardMakerApp = Object.create(HTMLElement.prototype);
 

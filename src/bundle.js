@@ -26,6 +26,9 @@ require("./components/authentication-panel/authentication-panel.js");
 require("./components/selection-page/selection-page.js");
 require("./components/sprint-selection-panel/sprint-selection-panel.js");
 require("./components/task-selection-panel/task-selection-panel.js");
+require("./components/card/card.js");
+require("./components/layout-panel/layout-panel.js");
+require("./components/layout-options/layout-options.js");
 
 var JiraCardMakerApp = Object.create(HTMLElement.prototype);
 
@@ -52,7 +55,7 @@ JiraCardMakerApp.onReleaseButtonClicked = function() {
 
 document.registerElement('jcm-app', {prototype: JiraCardMakerApp});
 
-},{"./../lib/knockout.js":2,"./../lib/webcomponents-lite.min.js":3,"./Card":4,"./CardView":5,"./IssueChecklistHandler":6,"./RapidBoardHandler":7,"./SelectUtilities":8,"./components/authentication-panel/authentication-panel.js":9,"./components/selection-page/selection-page.js":10,"./components/sprint-selection-panel/sprint-selection-panel.js":11,"./components/task-selection-panel/task-selection-panel.js":12,"./navigators/CSVNavigator.js":13,"./navigators/FixVersionNavigator.js":14,"./navigators/JiraNavigator":15,"./navigators/RapidBoardNavigator.js":16,"./navigators/XBoardNavigator.js":17,"./services/JiraApi.js":18,"./services/JiraApiHandler":19,"./services/JiraCommunicationHandler.js":20,"./services/templateService":22}],2:[function(require,module,exports){
+},{"./../lib/knockout.js":2,"./../lib/webcomponents-lite.min.js":3,"./Card":4,"./CardView":5,"./IssueChecklistHandler":6,"./RapidBoardHandler":7,"./SelectUtilities":8,"./components/authentication-panel/authentication-panel.js":9,"./components/card/card.js":10,"./components/layout-options/layout-options.js":11,"./components/layout-panel/layout-panel.js":12,"./components/selection-page/selection-page.js":13,"./components/sprint-selection-panel/sprint-selection-panel.js":14,"./components/task-selection-panel/task-selection-panel.js":15,"./navigators/CSVNavigator.js":16,"./navigators/FixVersionNavigator.js":17,"./navigators/JiraNavigator":18,"./navigators/RapidBoardNavigator.js":19,"./navigators/XBoardNavigator.js":20,"./services/JiraApi.js":21,"./services/JiraApiHandler":22,"./services/JiraCommunicationHandler.js":23,"./services/templateService":25}],2:[function(require,module,exports){
 // Knockout JavaScript library v2.3.0
 // (c) Steven Sanderson - http://knockoutjs.com/
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
@@ -511,7 +514,66 @@ AuthenticationPanel.onButtonClicked = function () {
 document.registerElement('jcm-authentication-panel', {prototype: AuthenticationPanel});
 
 module.exports = AuthenticationPanel;
-},{"./../../services/emitr":21,"./../../services/templateService":22}],10:[function(require,module,exports){
+},{"./../../services/emitr":24,"./../../services/templateService":25}],10:[function(require,module,exports){
+"use strict";
+
+var templateService = require("./../../services/templateService");
+var Card = Object.create(HTMLElement.prototype);
+
+Card.createdCallback = function() {};
+
+Card.attachedCallback = function() {
+	var template = document.importNode(templateService.getTemplate("card"), true);
+    this.appendChild(template);
+};
+
+Card.updateData = function(data) {
+	debugger;
+};
+
+document.registerElement('jcm-card', {prototype: Card});
+
+},{"./../../services/templateService":25}],11:[function(require,module,exports){
+"use strict";
+
+var Emitr = require("./../../services/emitr");
+
+var LayoutOptions = Object.create(HTMLElement.prototype);
+var templateService = require("./../../services/templateService");
+
+Emitr(LayoutOptions);
+
+LayoutOptions.createdCallback = function() {};
+
+LayoutOptions.attachedCallback = function() {
+	var template = document.importNode(templateService.getTemplate("layout-options"), true);
+    this.appendChild(template);
+};
+
+document.registerElement('layout-options', {prototype: LayoutOptions});
+
+},{"./../../services/emitr":24,"./../../services/templateService":25}],12:[function(require,module,exports){
+"use strict";
+
+var Emitr = require("./../../services/emitr");
+
+var LayoutPanel = Object.create(HTMLElement.prototype);
+var templateService = require("./../../services/templateService");
+
+Emitr(LayoutPanel);
+
+LayoutPanel.createdCallback = function() {
+	this.authenticationPanel = null;
+};
+
+LayoutPanel.attachedCallback = function() {
+	var template = document.importNode(templateService.getTemplate("layout-panel"), true);
+    this.appendChild(template);
+};
+
+document.registerElement('jcm-layout-panel', {prototype: LayoutPanel});
+
+},{"./../../services/emitr":24,"./../../services/templateService":25}],13:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -536,7 +598,7 @@ SelectionPage.onReleaseButtonClicked = function() {
 
 document.registerElement('selection-page', {prototype: SelectionPage});
 
-},{"./../../services/emitr":21,"./../../services/templateService":22}],11:[function(require,module,exports){
+},{"./../../services/emitr":24,"./../../services/templateService":25}],14:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -557,7 +619,7 @@ SprintSelectionPanel.attachedCallback = function() {
 
 document.registerElement('jcm-sprint-selection-panel', {prototype: SprintSelectionPanel});
 
-},{"./../../services/emitr":21,"./../../services/templateService":22}],12:[function(require,module,exports){
+},{"./../../services/emitr":24,"./../../services/templateService":25}],15:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -578,7 +640,7 @@ TaskSelectionPanel.attachedCallback = function() {
 
 document.registerElement('jcm-task-selection-panel', {prototype: TaskSelectionPanel});
 
-},{"./../../services/emitr":21,"./../../services/templateService":22}],13:[function(require,module,exports){
+},{"./../../services/emitr":24,"./../../services/templateService":25}],16:[function(require,module,exports){
 var CSVNavigator = function(jiraUrl, jiraNavigator) {
 	this.jiraNavigator = jiraNavigator;
     this.jiraUrl = jiraUrl;
@@ -614,7 +676,7 @@ CSVNavigator.prototype.updateJiraListWithIndividualJiras = function() {
 CSVNavigator.prototype.hideAll = function() {
 	this.csvJirasField.visible(false);
 }
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var FixVersionNavigator = function(jiraUrl, jiraNavigator) {
 	this.jiraNavigator = jiraNavigator;
     this.jiraUrl = jiraUrl;
@@ -678,7 +740,7 @@ FixVersionNavigator.prototype.receiveFixVersionsData = function(views) {
 FixVersionNavigator.prototype.receiveJiraCallback = function(jiras) {
 	this.jiraNavigator.receiveJiraCallback(jiras);
 }
-},{}],15:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 _noneOption = {value: "none", text: "None"};
 _noneOptionArray = [this._noneOption];
 
@@ -750,7 +812,7 @@ JiraNavigator.setDropDown = function(dropDown, views, value, text) {
 		dropDown.push({value: view[value], text: view[text]});
 	}.bind(this));
 }
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 var RapidBoardNavigator = function(jiraUrl, jiraNavigator) {
 	this.jiraNavigator = jiraNavigator;
     this.jiraUrl = jiraUrl;
@@ -815,7 +877,7 @@ RapidBoardNavigator.prototype.hideAll = function() {
 RapidBoardNavigator.prototype.receiveJiraCallback = function(jiras) {
 	this.jiraNavigator.receiveJiraCallback(jiras);
 }
-},{}],17:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 var XBoardNavigator = function(jiraUrl, jiraNavigator) {
 	this.jiraNavigator = jiraNavigator;
     this.jiraUrl = jiraUrl;
@@ -935,7 +997,7 @@ XBoardNavigator.prototype.getKeyFromIssue = function(issues) {
     return returnKeys;
 }
 
-},{}],18:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var JiraApi = function(domain, json, username, password) {
     this.dataType = "jsonp"
     if (json === true) {
@@ -1008,7 +1070,7 @@ JiraApi.prototype.getData = function(callback, type, isGreenhopper) {
     this.jch.getData(callback, requestUrl);
 }
 
-},{}],19:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var JiraApiHandler = function(jiraUrl, listener) {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
@@ -1197,7 +1259,7 @@ JiraApiHandler.prototype.getCallbackName = function() {
 	}.bind(this);
 	return callbackName
 }
-},{}],20:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 var JiraCommunicationHandler = function(domain, username, password) {
 	this.domain = domain;
 	this.username = username;
@@ -1314,7 +1376,7 @@ JiraCommunicationHandler.prototype.setAuthorizationHeader = function(xhr) {
 	var authHeader = "Basic "+btoa(this.username + ":" + this.password);
 	xhr.setRequestHeader("Authorization", authHeader);
 }
-},{}],21:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 
 module.exports = function (target) {
@@ -1354,7 +1416,7 @@ module.exports = function (target) {
     };
 }
 
-},{}],22:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 var templateService = {};
 
 templateService.getTemplate = function(id) {
