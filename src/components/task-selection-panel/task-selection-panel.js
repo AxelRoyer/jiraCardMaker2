@@ -24,6 +24,7 @@ TaskSelectionPanel.attachedCallback = function() {
 };
 
 TaskSelectionPanel.setTickets = function (tickets) {
+	this.style.display = "block";
 	for (var i = 0, len = tickets.length ; i < len ; i++) {
 		this.taskContainer.appendChild(this._createTaskItem(tickets[i]));
 	}

@@ -77,8 +77,6 @@ AuthenticationPanel.attachedCallback = function () {
     this.username = this.querySelector(".authentication-username");
     this.password = this.querySelector(".authentication-password");
     this.url = this.querySelector(".authentication-url");
-    this.jiraOnDemand = this.querySelector(".authentication-jira-on-demand");
-    this.project = this.querySelector(".authentication-project");
 
     this.button.addEventListener("click", this.onButtonClicked.bind(this), false);
 };
@@ -87,9 +85,7 @@ AuthenticationPanel.onButtonClicked = function () {
 	this.trigger(EVENTS.AUTHENTICATION_PANEL.AUTHENTICATION_SUBMITTED, {
 		username: this.username.value,
 		password: this.password.value,
-		url: this.url.value,
-		jiraOnDemand: this.jiraOnDemand.value,
-        project: this.project.value
+		url: this.url.value
 	});
 };
 
@@ -121,6 +117,7 @@ BoardSelectionPanel.attachedCallback = function() {
 };
 
 BoardSelectionPanel.setBoards = function (boards) {
+	this.style.display = "block";
 	for (var i = 0, len = boards.length ; i < len ; i++) {
 		this.boardSelector.appendChild(this._createOption(boards[i].name, boards[i].id));
 	}
@@ -519,6 +516,7 @@ SprintSelectionPanel.attachedCallback = function() {
 };
 
 SprintSelectionPanel.setSprints = function (sprints) {
+	this.style.display = "block";
 	for (var i = 0, len = sprints.length ; i < len ; i++) {
 		this.sprintSelector.appendChild(this._createOption(sprints[i]));
 	}
@@ -570,6 +568,7 @@ TaskSelectionPanel.attachedCallback = function() {
 };
 
 TaskSelectionPanel.setTickets = function (tickets) {
+	this.style.display = "block";
 	for (var i = 0, len = tickets.length ; i < len ; i++) {
 		this.taskContainer.appendChild(this._createTaskItem(tickets[i]));
 	}

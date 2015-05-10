@@ -107,13 +107,13 @@ jcm-authentication-panel {
     display: block; }
 
 jcm-sprint-selection-panel {
-  display: block; }
+  display: none; }
 
 jcm-board-selection-panel {
-  display: block; }
+  display: none; }
 
 jcm-task-selection-panel {
-  display: block; }
+  display: none; }
   jcm-task-selection-panel task-selection-row + task-selection-row {
     margin-top: 0.5rem; }
 

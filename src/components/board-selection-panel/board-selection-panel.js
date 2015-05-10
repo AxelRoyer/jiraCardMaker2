@@ -22,6 +22,7 @@ BoardSelectionPanel.attachedCallback = function() {
 };
 
 BoardSelectionPanel.setBoards = function (boards) {
+	this.style.display = "block";
 	for (var i = 0, len = boards.length ; i < len ; i++) {
 		this.boardSelector.appendChild(this._createOption(boards[i].name, boards[i].id));
 	}

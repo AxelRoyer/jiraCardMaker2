@@ -23,8 +23,6 @@ AuthenticationPanel.attachedCallback = function () {
     this.username = this.querySelector(".authentication-username");
     this.password = this.querySelector(".authentication-password");
     this.url = this.querySelector(".authentication-url");
-    this.jiraOnDemand = this.querySelector(".authentication-jira-on-demand");
-    this.project = this.querySelector(".authentication-project");
 
     this.button.addEventListener("click", this.onButtonClicked.bind(this), false);
 };
@@ -33,9 +31,7 @@ AuthenticationPanel.onButtonClicked = function () {
 	this.trigger(EVENTS.AUTHENTICATION_PANEL.AUTHENTICATION_SUBMITTED, {
 		username: this.username.value,
 		password: this.password.value,
-		url: this.url.value,
-		jiraOnDemand: this.jiraOnDemand.value,
-        project: this.project.value
+		url: this.url.value
 	});
 };
 

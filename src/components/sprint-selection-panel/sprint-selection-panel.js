@@ -22,6 +22,7 @@ SprintSelectionPanel.attachedCallback = function() {
 };
 
 SprintSelectionPanel.setSprints = function (sprints) {
+	this.style.display = "block";
 	for (var i = 0, len = sprints.length ; i < len ; i++) {
 		this.sprintSelector.appendChild(this._createOption(sprints[i]));
 	}
