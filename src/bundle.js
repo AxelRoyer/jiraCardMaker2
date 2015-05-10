@@ -347,11 +347,12 @@ TaskSelectionPanel.createdCallback = function() {
 TaskSelectionPanel.attachedCallback = function() {
 	var template = document.importNode(templateService.getTemplate("task-selection-panel"), true);
     this.appendChild(template);
+    this.taskContainer = this.querySelector("panel-body");
 };
 
 TaskSelectionPanel.setTickets = function (tickets) {
 	for (var i = 0, len = tickets.length ; i < len ; i++) {
-		this.appendChild(this._createTaskItem(tickets[i]));
+		this.taskContainer.appendChild(this._createTaskItem(tickets[i]));
 	}
 };
 
@@ -656,7 +657,6 @@ JiraService.prototype.getSprints = function (rapidviewId) {
             if (xhr.readyState == 4) {
                 if (xhr.status === 200) {
                     this.sprints = JSON.parse(xhr.responseText).sprints;
-                    debugger;
                     resolve(this.sprints);
                 } else {
                     reject();
