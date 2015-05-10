@@ -185,262 +185,91 @@ jcm-card {
   height: 300px;
   background-color: white;
   border: 2px solid black;
-  margin: 0 auto; }
-
-.ticket {
-  display: inline-block;
+  margin: 0 auto;
   position: relative; }
-
-.page-to-print .ticket {
-  margin: 0.5rem; }
-
-.page {
-  page-break-before: always;
-  clear: both; }
-
-.project {
-  line-height: 18px; }
-
-.number {
-  font-size: 250%; }
-
-select {
-  display: block; }
-
-.ticket {
-  background-color: white;
-  width: 310px;
-  height: 310px;
-  border: 2px solid black; }
-
-.epic {
-  border: 1px solid #d3d3d3;
-  border-radius: 5px;
-  -webkit-print-color-adjust: exact; }
-
-/* row and column */
-.titleRow {
-  height: 50px; }
-
-/* colors */
-.color .key {
-  -webkit-print-color-adjust: exact; }
-
-.color.Bug .key {
-  background-color: #c00;
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-  color: white; }
-
-.color.Documentation .key {
-  background-color: #ffd600;
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-  color: white; }
-
-.color.Improvement .key {
-  background-color: #090;
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-  color: white; }
-
-.color.Story .key {
-  background-color: #909;
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-  color: white; }
-
-.color.Task .key {
-  background-color: #bfe4ff;
-  color: black; }
-
-.color.Technical_task .key {
-  background-color: #099;
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-  color: white; }
-
-.color.Front_End .key {
-  background-color: #6c3; }
-
-/* parts of the card */
-.titleElement {
-  text-align: center;
-  float: left;
-  outline: 2px solid black;
-  vertical-align: middle;
-  height: 100%;
-  font-size: 12px;
-  line-height: 50px;
-  display: inline-block; }
-
-.titleElement.multiline {
-  line-height: 25px; }
-
-.key {
-  font-size: 80%;
-  font-weight: bolder;
-  float: left;
-  width: 35%;
-  line-height: 25px;
-  width: 30%; }
-
-.estimate {
-  width: 15%;
-  font-size: 30px;
-  background: white; }
-
-.actual {
-  width: 15%;
-  background: white; }
-
-.owner {
-  width: 40%;
-  background: white; }
-
-.Doc, .Demo, .Review, .Rel_Note, .Wiki {
-  width: 100%;
-  height: 60px; }
-
-.qrcode {
-  width: 100%;
-  height: 74px; }
-
-.qrcode img {
-  margin-top: 20px;
-  width: 50px;
-  height: 50px; }
-
-.summaryElement {
-  margin-right: 70px;
-  padding: 1em;
-  font-size: 23px;
-  overflow: hidden;
-  line-height: 23px;
-  height: 200px; }
-
-.parentSummary, .component {
-  font-weight: bolder;
-  display: block;
-  padding-bottom: 1em; }
-
-.tag {
-  width: 70px;
-  height: 20px;
-  margin-top: 200px;
-  padding: 1em;
-  font-size: 23px;
-  position: absolute; }
-
-.businessvalue {
-  width: 20px;
-  height: 20px;
-  margin-top: 200px;
-  margin-left: 194px;
-  padding: 1em;
-  font-size: 23px;
-  position: absolute;
-  -webkit-print-color-adjust: exact; }
-
-.businessvalue.cat1 {
-  background-color: #abda0a; }
-
-.businessvalue.cat2 {
-  background-color: #dad99d; }
-
-.businessvalue.cat3 {
-  background-color: #f36d1a; }
-
-.businessvalue.cat4 {
-  background-color: #18a7da; }
-
-.businessvalue.cat5 {
-  background-color: #19da12; }
-
-.businessvalue.cat6 {
-  background-color: #DA205B; }
-
-.page {
-  page-break-before: always;
-  clear: both; }
-
-.ticket {
-  width: 310px;
-  height: 300px;
-  border: 2px solid black; }
-
-/* row and column */
-.titleRow {
-  height: 50px;
-  border-bottom: 2px solid black;
-  -webkit-print-color-adjust: exact; }
-
-.sidebar {
-  text-align: center;
-  width: 65px;
-  height: 267px;
-  clear: both;
-  top: 52px;
-  position: absolute;
-  bottom: 0;
-  right: 0; }
-
-/* colors */
-.color.Bug .titleRow {
-  background-color: #c00; }
-
-.color.Documentation .titleRow {
-  background-color: #ffd600; }
-
-.color.Improvement .titleRow {
-  background-color: #090; }
-
-.color.Story .titleRow {
-  background-color: #090; }
-
-.color.Task .titleRow {
-  background-color: #bfe4ff; }
-
-.color.Technical_task .titleRow {
-  background-color: #099; }
-
-.sidebar .titleElement {
-  width: 100%;
-  height: 60px; }
-
-.issueId {
-  font-size: 115%;
-  font-weight: bolder;
-  float: left;
-  width: 117px;
-  line-height: 25px; }
-
-.mono .issueId {
-  border-left: none; }
-
-.sidebar .qrcode {
-  height: 82px; }
-
-.qrcode img {
-  margin-top: 15px;
-  width: 50px;
-  height: 50px; }
-
-.summaryElement {
-  margin-right: 70px;
-  padding: 1em;
-  font-size: 28px;
-  overflow: hidden;
-  line-height: 30px;
-  height: 200px;
-  font-family: sans-serif; }
-
-.parentSummary, .component {
-  font-style: italic;
-  display: block;
-  font-size: 70%;
-  padding-bottom: 0.4em;
-  font-family: serif; }
-
-.tag {
-  width: 70px;
-  height: 20px;
-  margin-top: 200px;
-  padding: 1em;
-  font-size: 23px;
-  position: absolute; }
+  jcm-card header {
+    display: flex;
+    height: 15%;
+    text-align: center;
+    margin-bottom: 1.5rem; }
+    jcm-card header .parent-container {
+      width: 30%;
+      display: inline-block;
+      border-width: 0 0 2px 0;
+      border-style: solid;
+      border-color: black;
+      flex-direction: column;
+      align-items: center;
+      height: 100%; }
+      jcm-card header .parent-container > div {
+        padding-top: 0.2rem;
+        height: 50%; }
+    jcm-card header .task-container {
+      width: 40%;
+      display: inline-block;
+      background: red; }
+      jcm-card header .task-container .task-id {
+        font-size: 2.5rem;
+        background: red;
+        border-width: 0 2px 2px 2px;
+        border-style: solid;
+        border-color: black; }
+      jcm-card header .task-container .task-project-id {
+        padding-top: 0.3rem;
+        border-width: 0 2px 0 2px;
+        border-style: solid;
+        border-color: black; }
+    jcm-card header .task-estimate-priority {
+      width: 30%;
+      display: flex;
+      border-width: 0 0 2px 0;
+      border-style: solid;
+      border-color: black; }
+    jcm-card header .task-estimate {
+      width: 50%;
+      display: inline-block;
+      font-size: 2rem;
+      margin-top: 0.4rem; }
+    jcm-card header .task-priority {
+      width: 50%;
+      display: inline-block; }
+      jcm-card header .task-priority.priority1 {
+        -webkit-mask: url("images/critical.svg") no-repeat center center;
+        background-color: red;
+        -webkit-mask-size: 35px; }
+      jcm-card header .task-priority.priority2 {
+        -webkit-mask: url("images/arrowPriority.svg") no-repeat center center;
+        background-color: red;
+        -webkit-mask-size: 35px;
+        transform: rotate(-90deg); }
+      jcm-card header .task-priority.priority3 {
+        -webkit-mask: url("images/arrowPriority.svg") no-repeat center center;
+        background-color: orange;
+        -webkit-mask-size: 35px; }
+      jcm-card header .task-priority.priority4 {
+        -webkit-mask: url("images/arrowPriority.svg") no-repeat center center;
+        background-color: green;
+        -webkit-mask-size: 35px;
+        transform: rotate(90deg); }
+  jcm-card .task-summary {
+    padding: 0.5rem; }
+  jcm-card .task-epic {
+    padding: 0.2rem;
+    border: 1px solid black;
+    border-radius: 0.3rem;
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    max-width: calc(100% - 6rem);
+    line-height: 1.5rem;
+    height: 2rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 0.8rem; }
+  jcm-card .task-qrcode {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    width: 5rem;
+    height: 5rem; }

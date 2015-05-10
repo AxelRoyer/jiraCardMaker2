@@ -35,13 +35,14 @@ TaskSelectionRow._onDetailsButtonClicked = function () {
 
 TaskSelectionRow.isSelected = function () {
 	if (this.checkbox.checked === true) {
-		return this.key;
+		return this._data;
 	}
 
 	return false;
 };
 
 TaskSelectionRow.setData = function (data) {
+	this._data = data;
 	this.taskId.textContent = data.key;
 	this.header.textContent = data.fields.summary;
 	this.key = data.key;
