@@ -1,6 +1,6 @@
 var JiraService = function() {
-	this.username = "axelrb";
-	this.password = "ctdSeVDp:)";
+	this.username = "";
+	this.password = "";
 	this.url = null;
     this.sprints = null;
 };

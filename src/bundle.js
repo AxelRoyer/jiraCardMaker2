@@ -557,6 +557,10 @@ Emitr(TaskSelectionPanel);
 
 TaskSelectionPanel.createdCallback = function() {
 	this.authenticationPanel = null;
+	this.printButton = null;
+	this.selectAllButton = null;
+	this.unSelectAllButton = null;
+	this.taskItems = [];
 };
 
 TaskSelectionPanel.attachedCallback = function() {
@@ -564,30 +568,40 @@ TaskSelectionPanel.attachedCallback = function() {
     this.appendChild(template);
     this.taskContainer = this.querySelector("panel-body");
     this.printButton = this.querySelector(".print-tickets-button");
+	this.selectAllButton = this.querySelector(".select-all-button");
+	this.unSelectAllButton = this.querySelector(".unselect-all-button");  
     this.printButton.addEventListener("click", this._onPrintButtonClicked.bind(this), false);
+    this.selectAllButton.addEventListener("click", this._toogleTaskSelection.bind(this, true), false);
+    this.unSelectAllButton.addEventListener("click", this._toogleTaskSelection.bind(this, false), false);
 };
 
 TaskSelectionPanel.setTickets = function (tickets) {
 	this.style.display = "block";
 	for (var i = 0, len = tickets.length ; i < len ; i++) {
-		this.taskContainer.appendChild(this._createTaskItem(tickets[i]));
+		var taskItem = this._createTaskItem(tickets[i]);
+		this.taskContainer.appendChild(taskItem);
+		this.taskItems.push(taskItem);
 	}
 };
 
 TaskSelectionPanel._onPrintButtonClicked = function () {
 	//TODO Bad design, need to refactor
-	var tasksItems = this.querySelectorAll("task-selection-row");
-
 	var selectedTasks = [];
 
-	for (var i = 0, len = tasksItems.length ; i < len ; i++) {
-		var selectedItem = tasksItems[i].isSelected();
+	for (var i = 0, len = this.tasksItems.length ; i < len ; i++) {
+		var selectedItem = this.tasksItems[i].isSelected();
 		if (selectedItem !== false) {
 			selectedTasks .push(selectedItem);
 		}
 	}
 
 	this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, selectedTasks);
+};
+
+TaskSelectionPanel._toogleTaskSelection = function (value) {
+	for (var i = 0, len = this.taskItems.length ; i < len ; i++) {
+		this.taskItems[i].toggleCheckedValue(value);
+	}
 };
 
 TaskSelectionPanel._createTaskItem = function (taskParams) {
@@ -633,6 +647,10 @@ TaskSelectionRow._onDetailsButtonClicked = function () {
 	this.taskDetailsContainer.style.display = value;	
 	this.areDetailsDisplayed = !this.areDetailsDisplayed;
 };
+
+TaskSelectionRow.toggleCheckedValue = function (value) {
+	this.checkbox.checked = value;
+}
 
 TaskSelectionRow.isSelected = function () {
 	if (this.checkbox.checked === true) {
@@ -915,8 +933,8 @@ module.exports = function (target) {
 
 },{}],17:[function(require,module,exports){
 var JiraService = function() {
-	this.username = "axelrb";
-	this.password = "ctdSeVDp:)";
+	this.username = "";
+	this.password = "";
 	this.url = null;
     this.sprints = null;
 };

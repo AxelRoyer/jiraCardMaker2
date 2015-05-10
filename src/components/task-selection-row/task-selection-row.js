@@ -33,6 +33,10 @@ TaskSelectionRow._onDetailsButtonClicked = function () {
 	this.areDetailsDisplayed = !this.areDetailsDisplayed;
 };
 
+TaskSelectionRow.toggleCheckedValue = function (value) {
+	this.checkbox.checked = value;
+}
+
 TaskSelectionRow.isSelected = function () {
 	if (this.checkbox.checked === true) {
 		return this._data;
