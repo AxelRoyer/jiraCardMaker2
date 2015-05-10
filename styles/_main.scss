@@ -38,3 +38,10 @@ panel-body {
 	background: silver;
 	border-radius: 0 0 0.5rem 0.5rem;
 }
+
+print-page {
+	height: 100%;
+	width: 100%;
+	background-color: white;
+	display: none;
+}

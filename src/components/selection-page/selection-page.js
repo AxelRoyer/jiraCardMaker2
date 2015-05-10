@@ -34,7 +34,7 @@ SelectionPage.attachedCallback = function() {
     this.sprintSelectionPanel.on(EVENTS.SPRINT_PANEL.SPRINT_SELECTED, this._onSprintSelected, this);
 
     this.taskSelectionPanel = this.querySelector("jcm-task-selection-panel");
-    this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASK_SELECTED, this._ontaskSelected, this);
+    this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASKS_SELECTED, this._ontaskSelected, this);
 
     this.loadingScreen = this.querySelector("loading-screen");
 };
@@ -55,6 +55,10 @@ SelectionPage._onBoardSelected = function (boardId) {
     }.bind(this));
 };
 
+SelectionPage.hide = function () {
+    this.style.display = "none";
+};
+
 SelectionPage._onSprintSelected = function (sprintId) {
     this.loadingScreen.show("loading in progress");
     var ticketsId = this.jiraService.getTasksIds(sprintId);
@@ -62,6 +66,21 @@ SelectionPage._onSprintSelected = function (sprintId) {
         this.loadingScreen.hide();
         this.taskSelectionPanel.setTickets(tasksDetails);
     }.bind(this));
+};
+
+SelectionPage._ontaskSelected = function (selectedTasks) {
+    this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, {
+        tasks: selectedTasks, 
+        config: {
+            key: true,
+            title: true,
+            summary: true,
+            epic: true,
+            priority: true,
+            estimate: true,
+            parent: true
+        }
+    });
 };
 
 document.registerElement('selection-page', {prototype: SelectionPage});

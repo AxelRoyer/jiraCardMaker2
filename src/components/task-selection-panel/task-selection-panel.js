@@ -7,6 +7,8 @@ var templateService = require("./../../services/templateService");
 
 require("./../task-selection-row/task-selection-row.js");
 
+var EVENTS = require("../../events");
+
 Emitr(TaskSelectionPanel);
 
 TaskSelectionPanel.createdCallback = function() {
@@ -40,7 +42,7 @@ TaskSelectionPanel._onPrintButtonClicked = function () {
 		}
 	}
 
-	debugger;
+	this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, selectedTasks);
 };
 
 TaskSelectionPanel._createTaskItem = function (taskParams) {

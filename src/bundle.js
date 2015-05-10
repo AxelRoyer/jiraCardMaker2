@@ -6,10 +6,11 @@ var templateService = require("./services/templateService");
 
 require("./../lib/webcomponents-lite.min.js");
 
-require("./events.js");
+var EVENTS = require("./events.js");
 
 require("./components/authentication-panel/authentication-panel.js");
 require("./components/selection-page/selection-page.js");
+require("./components/print-page/print-page.js");
 require("./components/card/card.js");
 require("./components/layout-panel/layout-panel.js");
 require("./components/layout-options/layout-options.js");
@@ -17,18 +18,28 @@ require("./components/loading-screen/loading-screen.js");
 
 var JiraCardMakerApp = Object.create(HTMLElement.prototype);
 
-JiraCardMakerApp.createdCallback = function() {
+JiraCardMakerApp.createdCallback = function () {
 	window.location.hash = "request";
+	this.selectionPage = null;
 };
 
-JiraCardMakerApp.attachedCallback = function() {
+JiraCardMakerApp.attachedCallback = function () {
 	this.template = document.importNode(templateService.getTemplate("app"), true);
     this.appendChild(this.template);
+
+	this.selectionPage = this.querySelector("selection-page");
+	this.selectionPage.on(EVENTS.TASK_PANEL.TASKS_SELECTED, this._onTasksSelected.bind(this), false);
+	this.printPage = this.querySelector("selection-print-page");
+};
+
+JiraCardMakerApp._onTasksSelected = function (params) {
+	this.selectionPage.hide();
+	this.printPage.show(params);
 };
 
 document.registerElement('jcm-app', {prototype: JiraCardMakerApp});
 
-},{"./../lib/webcomponents-lite.min.js":2,"./components/authentication-panel/authentication-panel.js":3,"./components/card/card.js":5,"./components/layout-options/layout-options.js":6,"./components/layout-panel/layout-panel.js":7,"./components/loading-screen/loading-screen.js":8,"./components/selection-page/selection-page.js":9,"./events.js":13,"./services/JiraApiHandler":14,"./services/templateService":17}],2:[function(require,module,exports){
+},{"./../lib/webcomponents-lite.min.js":2,"./components/authentication-panel/authentication-panel.js":3,"./components/card/card.js":5,"./components/layout-options/layout-options.js":6,"./components/layout-panel/layout-panel.js":7,"./components/loading-screen/loading-screen.js":8,"./components/print-page/print-page.js":9,"./components/selection-page/selection-page.js":10,"./events.js":14,"./services/JiraApiHandler":15,"./services/templateService":18}],2:[function(require,module,exports){
 /**
  * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
@@ -85,7 +96,7 @@ AuthenticationPanel.onButtonClicked = function () {
 document.registerElement('jcm-authentication-panel', {prototype: AuthenticationPanel});
 
 module.exports = AuthenticationPanel;
-},{"../../events":13,"./../../services/emitr":15,"./../../services/templateService":17}],4:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],4:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -128,7 +139,7 @@ BoardSelectionPanel._createOption = function (label, value) {
 
 document.registerElement('jcm-board-selection-panel', {prototype: BoardSelectionPanel});
 
-},{"../../events":13,"./../../services/emitr":15,"./../../services/templateService":17}],5:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],5:[function(require,module,exports){
 "use strict";
 
 var templateService = require("./../../services/templateService");
@@ -174,97 +185,178 @@ Card._updateUI = function () {
 	    this._taskIdContainer.textContent = this._data.key.split("-")[1];
 	    this._taskProjectContainer.textContent = this._data.key.split("-")[0];
 
-	    this._parentIdContainer.textContent = this._data.parent.split("-")[1];
-	    this._parentProjectContainer.textContent = this._data.parent.split("-")[0];
+	    if (this._data.parent) {
+	    	this._parentIdContainer.textContent = this._data.parent.split("-")[1];
+	    	this._parentProjectContainer.textContent = this._data.parent.split("-")[0];
+	    }
 
 	    this._priorityContainer.classList.remove(this._priority);
-	    this._priority = "priority" + this._data.priority;
+	    this._priority = "priority" + this._data.fields.priority.id;
 	    this._priorityContainer.classList.add(this._priority);
 
-	    this._estimateContainer.textContent = this._data.estimate;
+	    this._estimateContainer.textContent = this._data.fields.customfield_10243;
 	    this._epicContainer.textContent = this._data.epic;
-	    this._summaryContainer.textContent = this._data.summary;
+	    this._summaryContainer.textContent = this._data.fields.summary;
 
 	   	this._qrcodeContainer.src = "http://qr.kaywa.com/?s=8&d=" + "https://jira.caplin.com/browse/" + this._data.key;
 
-	    this._taskIdContainer.style.visibility = this._config.key;
-	    this._taskProjectContainer.style.visibility = this._config.key;
+	   	debugger;
 
-	    this._parentIdContainer.style.visibility = this._config.parent;
-	    this._parentProjectContainer.style.visibility = this._config.parent;
+	    if (this._data.parent) {
+		    this._parentIdContainer.style.visibility = this._config.parent.checked === true ? "visible" : "hidden";
+		    this._parentProjectContainer.style.visibility = this._config.parent.checked === true ? "visible" : "hidden";;
+		}
 
-	    this._estimateContainer.style.visibility = this._config.estimate;
-	    this._qrcodeContainer.style.visibility = this._config.qrcode;
-	    this._epicContainer.style.visibility = this._config.epic;
-	    this._summaryContainer.style.visibility = this._config.summary;
+	    this._estimateContainer.style.visibility = this._config.estimate.checked === true ? "visible" : "hidden";;
+	    this._qrcodeContainer.style.visibility = this._config.qrcode.checked === true ? "visible" : "hidden";;
+	    this._epicContainer.style.visibility = this._config.epic.checked === true ? "visible" : "hidden";;
+	    this._priorityContainer.style.visibility = this._config.priority.checked === true ? "visible" : "hidden";;
 	}
 };
 
 document.registerElement('jcm-card', {prototype: Card});
 
-},{"./../../services/templateService":17}],6:[function(require,module,exports){
+},{"./../../services/templateService":18}],6:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
 
 var LayoutOptions = Object.create(HTMLElement.prototype);
 var templateService = require("./../../services/templateService");
+var EVENTS = require("../../events");
 
 Emitr(LayoutOptions);
 
-LayoutOptions.createdCallback = function() {};
+LayoutOptions.createdCallback = function () {
+	this._config = null;
+};
 
-LayoutOptions.attachedCallback = function() {
-	var template = document.importNode(templateService.getTemplate("layout-options"), true);
-    this.appendChild(template);
+LayoutOptions.attachedCallback = function () {
+};
+
+LayoutOptions.setOptionsConfiguration = function (config) {
+	this._config = config;
+
+	for (var i = 0, len = this._config.keys.length ; i < len ; i++) {
+		this.appendChild(this._createOptionItem(this._config.parameters[this._config.keys[i]], this._config.keys[i]));
+	}
+};
+
+LayoutOptions._createOptionItem = function (params, value) {
+	var parent = document.createElement("label");
+
+	var input = document.createElement("input");
+	input.type = "checkbox";
+	input.checked = params.checked;
+	input.dataset.value = value;
+	parent.appendChild(input);
+
+	var label = document.createElement("span");
+	label.textContent = params.label;
+	parent.appendChild(label);
+
+	input.addEventListener("click", this._onValueChanged.bind(this, input), false);
+
+	return parent;
+};
+
+LayoutOptions._onValueChanged = function (input) {
+	this._config.parameters[input.dataset.value].checked = input.checked;
+	this.trigger(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._config.parameters);
 };
 
 document.registerElement('layout-options', {prototype: LayoutOptions});
 
-},{"./../../services/emitr":15,"./../../services/templateService":17}],7:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],7:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
 
 var LayoutPanel = Object.create(HTMLElement.prototype);
 var templateService = require("./../../services/templateService");
+var EVENTS = require("../../events");
 
 Emitr(LayoutPanel);
 
 LayoutPanel.createdCallback = function() {
-	this._cardExample = null;
+    this._cardExample = null;
+    this._layoutOptions = null;
+    this._config = null;
 };
 
 LayoutPanel.attachedCallback = function() {
-	var template = document.importNode(templateService.getTemplate("layout-panel"), true);
+    var template = document.importNode(templateService.getTemplate("layout-panel"), true);
     this.appendChild(template);
 
     this._cardExample = this.querySelector("jcm-card");
+    this._layoutOptions = this.querySelector("layout-options");
+    this._config = {
+        keys: ["color", "qrcode", "parent", "component", "epic", "priority", "version", "estimate"],
+        parameters: {
+            color: {
+                label: "Color",
+                checked: true
+            },
+            qrcode: {
+                label: "QR Code",
+                checked: true
+            },
+            parent: {
+                label: "Parent",
+                checked: true
+            },
+            component: {
+                label: "Component",
+                checked: false
+            },
+            epic: {
+                label: "Epic",
+                checked: true
+            },
+            priority: {
+                label: "Priority",
+                checked: true
+            },
+            version: {
+                label: "Version",
+                checked: false
+            },
+            estimate: {
+                label: "Estimate task point",
+                checked: true
+            }
+        }
+    }
+
+    this._layoutOptions.setOptionsConfiguration(this._config);
+
+    this._layoutOptions.on(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._onLayoutOptionsChanged, this);
 
     this._cardExample.updateData({
-    	key: "FXM-1000",
-    	title: "Update login-screen",
-    	summary: "Update login screen with wecomponents",
-    	epic: "web components",
-    	priority: "2",
-    	estimate: "4",
-    	parent: "FXM-18"
+      	key: "FXM-1000",
+      	title: "Update login-screen",
+      	epic: "web components",
+      	parent: "FXM-18",
+        fields: {
+            priority: {
+              id: "4"
+            },
+            summary: "Update login screen with wecomponents",
+            customfield_10243: 4
+        }
     });
 
-   	this._cardExample.updateConfig({
-   		key: true,
-   		title: true,
-   		summary: true,
-   		epic: true,
-   		priority: true,
-   		estimate: true,
-   		parent: true
-   	});
+   	this._cardExample.updateConfig(this._config.parameters);
+};
+
+LayoutPanel._onLayoutOptionsChanged = function (config) {
+    this._config.parameters = config;
+    this._cardExample.updateConfig(this._config.parameters);
 };
 
 document.registerElement('jcm-layout-panel', {prototype: LayoutPanel});
 
-},{"./../../services/emitr":15,"./../../services/templateService":17}],8:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],8:[function(require,module,exports){
 "use strict";
 
 var LoadingScreen = Object.create(HTMLElement.prototype);
@@ -289,7 +381,32 @@ LoadingScreen.hide = function() {
 
 document.registerElement('loading-screen', {prototype: LoadingScreen});
 
-},{"./../../services/templateService":17}],9:[function(require,module,exports){
+},{"./../../services/templateService":18}],9:[function(require,module,exports){
+"use strict";
+
+var PrintPage = Object.create(HTMLElement.prototype);
+
+PrintPage.createdCallback = function() {
+};
+
+PrintPage.attachedCallback = function() {
+};
+
+PrintPage.show = function (params) {
+    this.style.display = "block";
+    
+    for (var i = 0, len = params.tasks.length ; i < len ; i++) {
+        var card = document.createElement("jcm-card");
+        this.appendChild(card);
+
+        card.updateData(params.tasks[i]);
+        card.updateConfig(params.config);
+    }
+};
+
+document.registerElement('selection-print-page', {prototype: PrintPage});
+
+},{}],10:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -326,7 +443,7 @@ SelectionPage.attachedCallback = function() {
     this.sprintSelectionPanel.on(EVENTS.SPRINT_PANEL.SPRINT_SELECTED, this._onSprintSelected, this);
 
     this.taskSelectionPanel = this.querySelector("jcm-task-selection-panel");
-    this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASK_SELECTED, this._ontaskSelected, this);
+    this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASKS_SELECTED, this._ontaskSelected, this);
 
     this.loadingScreen = this.querySelector("loading-screen");
 };
@@ -347,6 +464,10 @@ SelectionPage._onBoardSelected = function (boardId) {
     }.bind(this));
 };
 
+SelectionPage.hide = function () {
+    this.style.display = "none";
+};
+
 SelectionPage._onSprintSelected = function (sprintId) {
     this.loadingScreen.show("loading in progress");
     var ticketsId = this.jiraService.getTasksIds(sprintId);
@@ -356,9 +477,24 @@ SelectionPage._onSprintSelected = function (sprintId) {
     }.bind(this));
 };
 
+SelectionPage._ontaskSelected = function (selectedTasks) {
+    this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, {
+        tasks: selectedTasks, 
+        config: {
+            key: true,
+            title: true,
+            summary: true,
+            epic: true,
+            priority: true,
+            estimate: true,
+            parent: true
+        }
+    });
+};
+
 document.registerElement('selection-page', {prototype: SelectionPage});
 
-},{"../../events":13,"./../../services/emitr":15,"./../../services/jiraService":16,"./../../services/templateService":17,"./../board-selection-panel/board-selection-panel.js":4,"./../sprint-selection-panel/sprint-selection-panel.js":10,"./../task-selection-panel/task-selection-panel.js":11}],10:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":16,"./../../services/jiraService":17,"./../../services/templateService":18,"./../board-selection-panel/board-selection-panel.js":4,"./../sprint-selection-panel/sprint-selection-panel.js":11,"./../task-selection-panel/task-selection-panel.js":12}],11:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -407,7 +543,7 @@ SprintSelectionPanel._createOption = function (params) {
 
 document.registerElement('jcm-sprint-selection-panel', {prototype: SprintSelectionPanel});
 
-},{"../../events":13,"./../../services/emitr":15,"./../../services/templateService":17}],11:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],12:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -416,6 +552,8 @@ var TaskSelectionPanel = Object.create(HTMLElement.prototype);
 var templateService = require("./../../services/templateService");
 
 require("./../task-selection-row/task-selection-row.js");
+
+var EVENTS = require("../../events");
 
 Emitr(TaskSelectionPanel);
 
@@ -450,7 +588,7 @@ TaskSelectionPanel._onPrintButtonClicked = function () {
 		}
 	}
 
-	debugger;
+	this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, selectedTasks);
 };
 
 TaskSelectionPanel._createTaskItem = function (taskParams) {
@@ -461,7 +599,7 @@ TaskSelectionPanel._createTaskItem = function (taskParams) {
 
 document.registerElement('jcm-task-selection-panel', {prototype: TaskSelectionPanel});
 
-},{"./../../services/emitr":15,"./../../services/templateService":17,"./../task-selection-row/task-selection-row.js":12}],12:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18,"./../task-selection-row/task-selection-row.js":13}],13:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -527,7 +665,7 @@ TaskSelectionRow.setData = function (data) {
 
 document.registerElement('task-selection-row', {prototype: TaskSelectionRow});
 
-},{"../../events":13,"./../../services/emitr":15,"./../../services/templateService":17}],13:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],14:[function(require,module,exports){
 module.exports = {
 	"AUTHENTICATION_PANEL": {
 		"AUTHENTICATION_SUBMITTED": "authentication-subitted"
@@ -539,10 +677,13 @@ module.exports = {
 		"SPRINT_SELECTED": "sprint-selected"
 	},
 	"TASK_PANEL": {
-		"TASK_SELECTED": "task-selected"
+		"TASKS_SELECTED": "task-selected"
+	},
+	"LAYOUT_OPTIONS": {
+		"LAYOUT_OPTIONS_CHANGED": "layout-options-changed"
 	}
 };
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 var JiraApiHandler = function(jiraUrl, listener) {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
@@ -733,7 +874,7 @@ JiraApiHandler.prototype.getCallbackName = function() {
 }
 
 module.exports = JiraApiHandler;
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 
 module.exports = function (target) {
@@ -773,7 +914,7 @@ module.exports = function (target) {
     };
 }
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var JiraService = function() {
 	this.username = "axelrb";
 	this.password = "ctdSeVDp:)";
@@ -875,7 +1016,7 @@ JiraService.prototype.getTasksDetails = function (tasksId) {
 };
 
 module.exports = JiraService;
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var templateService = {};
 
 templateService.getTemplate = function(id) {

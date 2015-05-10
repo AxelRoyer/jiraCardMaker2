@@ -9,6 +9,9 @@ module.exports = {
 		"SPRINT_SELECTED": "sprint-selected"
 	},
 	"TASK_PANEL": {
-		"TASK_SELECTED": "task-selected"
+		"TASKS_SELECTED": "task-selected"
+	},
+	"LAYOUT_OPTIONS": {
+		"LAYOUT_OPTIONS_CHANGED": "layout-options-changed"
 	}
 };

@@ -43,29 +43,32 @@ Card._updateUI = function () {
 	    this._taskIdContainer.textContent = this._data.key.split("-")[1];
 	    this._taskProjectContainer.textContent = this._data.key.split("-")[0];
 
-	    this._parentIdContainer.textContent = this._data.parent.split("-")[1];
-	    this._parentProjectContainer.textContent = this._data.parent.split("-")[0];
+	    if (this._data.parent) {
+	    	this._parentIdContainer.textContent = this._data.parent.split("-")[1];
+	    	this._parentProjectContainer.textContent = this._data.parent.split("-")[0];
+	    }
 
 	    this._priorityContainer.classList.remove(this._priority);
-	    this._priority = "priority" + this._data.priority;
+	    this._priority = "priority" + this._data.fields.priority.id;
 	    this._priorityContainer.classList.add(this._priority);
 
-	    this._estimateContainer.textContent = this._data.estimate;
+	    this._estimateContainer.textContent = this._data.fields.customfield_10243;
 	    this._epicContainer.textContent = this._data.epic;
-	    this._summaryContainer.textContent = this._data.summary;
+	    this._summaryContainer.textContent = this._data.fields.summary;
 
 	   	this._qrcodeContainer.src = "http://qr.kaywa.com/?s=8&d=" + "https://jira.caplin.com/browse/" + this._data.key;
 
-	    this._taskIdContainer.style.visibility = this._config.key;
-	    this._taskProjectContainer.style.visibility = this._config.key;
+	   	debugger;
 
-	    this._parentIdContainer.style.visibility = this._config.parent;
-	    this._parentProjectContainer.style.visibility = this._config.parent;
+	    if (this._data.parent) {
+		    this._parentIdContainer.style.visibility = this._config.parent.checked === true ? "visible" : "hidden";
+		    this._parentProjectContainer.style.visibility = this._config.parent.checked === true ? "visible" : "hidden";;
+		}
 
-	    this._estimateContainer.style.visibility = this._config.estimate;
-	    this._qrcodeContainer.style.visibility = this._config.qrcode;
-	    this._epicContainer.style.visibility = this._config.epic;
-	    this._summaryContainer.style.visibility = this._config.summary;
+	    this._estimateContainer.style.visibility = this._config.estimate.checked === true ? "visible" : "hidden";;
+	    this._qrcodeContainer.style.visibility = this._config.qrcode.checked === true ? "visible" : "hidden";;
+	    this._epicContainer.style.visibility = this._config.epic.checked === true ? "visible" : "hidden";;
+	    this._priorityContainer.style.visibility = this._config.priority.checked === true ? "visible" : "hidden";;
 	}
 };
 

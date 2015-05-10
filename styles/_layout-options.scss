@@ -1,0 +1,15 @@
+layout-options {
+	display: block;
+	padding: 0.5rem;
+
+	label {
+		display: block;
+		line-height: 1.5rem;
+		cursor: pointer;
+	}
+
+	input {
+		position: relative;
+		top:-2px;
+	}
+}

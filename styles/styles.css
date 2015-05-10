@@ -61,6 +61,12 @@ panel-body {
   background: silver;
   border-radius: 0 0 0.5rem 0.5rem; }
 
+print-page {
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  display: none; }
+
 selection-page {
   display: block;
   min-height: 100%;
@@ -156,6 +162,17 @@ task-selection-row {
 
 jcm-layout-panel {
   display: block; }
+
+layout-options {
+  display: block;
+  padding: 0.5rem; }
+  layout-options label {
+    display: block;
+    line-height: 1.5rem;
+    cursor: pointer; }
+  layout-options input {
+    position: relative;
+    top: -2px; }
 
 loading-screen {
   display: none;
