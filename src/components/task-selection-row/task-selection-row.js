@@ -18,10 +18,8 @@ TaskSelectionRow.createdCallback = function () {
  	this.taskSubTaskContainer = this.querySelector(".task-subtasks");
  	this.taskDescription = this.querySelector(".task-description");
  	this.taskDetailsContainer = this.querySelector(".task-details");
- 	this.checkbox = this.querySelector("checkbox");
+ 	this.checkbox = this.querySelector("input[type='checkbox'");
  	this.areDetailsDisplayed = false;
- 	this.isSelect = true;
- 	this.hasChildren = null;
 };
 
 TaskSelectionRow.attachedCallback = function () {
@@ -35,30 +33,12 @@ TaskSelectionRow._onDetailsButtonClicked = function () {
 	this.areDetailsDisplayed = !this.areDetailsDisplayed;
 };
 
-TaskSelectionRow.select = function () {
-	this.isSelect = true;
-	this.checkbox.value = true;
-};
-
-TaskSelectionRow.unSelect = function () {
-	this.isSelect = false;
-	this.checkbox.value = false;
-};
-
-TaskSelectionRow.getSelectedItems = function () {
-	var returnValue = [];
-
-	if (this.isSelect) {
-		returnValue.push(this.key);
+TaskSelectionRow.isSelected = function () {
+	if (this.checkbox.checked === true) {
+		return this.key;
 	}
 
-	if (this.hasChildren === true) {
-		for (var i = 0, len = this.taskSubTaskContainer.children.length ; i < len ; i++) {
-			debugger;
-		}
-	}
-
-	return returnValue;
+	return false;
 };
 
 TaskSelectionRow.setData = function (data) {
@@ -71,7 +51,6 @@ TaskSelectionRow.setData = function (data) {
 
  	if (subtasks && subtasks.length !== 0) {
  		this.detailsButton.style.display = "block";
- 		this.hasChildren = true;
 
  		for (var i = 0, len = subtasks.length ; i < len ; i++) {
  			subtaskItem = document.createElement("task-selection-row");

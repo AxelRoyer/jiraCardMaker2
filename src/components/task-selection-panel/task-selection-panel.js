@@ -34,9 +34,9 @@ TaskSelectionPanel._onPrintButtonClicked = function () {
 	var selectedTasks = [];
 
 	for (var i = 0, len = tasksItems.length ; i < len ; i++) {
-		var isSelectedItem = tasksItems.getSelectedItems();
-		if (tasksItems.getSelectedItems().length > 0) {
-			selectedTasks = selectedTasks.concat(isSelectedItem);
+		var selectedItem = tasksItems[i].isSelected();
+		if (selectedItem !== false) {
+			selectedTasks .push(selectedItem);
 		}
 	}
 
