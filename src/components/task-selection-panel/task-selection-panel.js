@@ -5,6 +5,8 @@ var Emitr = require("./../../services/emitr");
 var TaskSelectionPanel = Object.create(HTMLElement.prototype);
 var templateService = require("./../../services/templateService");
 
+require("./../task-selection-row/task-selection-row.js");
+
 Emitr(TaskSelectionPanel);
 
 TaskSelectionPanel.createdCallback = function() {
@@ -24,8 +26,8 @@ TaskSelectionPanel.setTickets = function (tickets) {
 };
 
 TaskSelectionPanel._createTaskItem = function (taskParams) {
-	var taskItem = document.createElement("div");
-	taskItem.textContent = taskParams.key + " " + taskParams.fields.summary;
+	var taskItem = document.createElement("task-selection-row");
+	taskItem.setData(taskParams);
 	return taskItem;
 };
 
