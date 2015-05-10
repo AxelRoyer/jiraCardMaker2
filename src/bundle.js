@@ -248,6 +248,9 @@ SelectionPage.attachedCallback = function() {
     this.sprintSelectionPanel = this.querySelector("jcm-sprint-selection-panel");
     this.sprintSelectionPanel.on(EVENTS.SPRINT_PANEL.SPRINT_SELECTED, this._onSprintSelected, this);
 
+    this.taskSelectionPanel = this.querySelector("jcm-task-selection-panel");
+    this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASK_SELECTED, this._ontaskSelected, this);
+
     this.loadingScreen = this.querySelector("loading-screen");
 };
 
@@ -268,8 +271,12 @@ SelectionPage._onBoardSelected = function (boardId) {
 };
 
 SelectionPage._onSprintSelected = function (sprintId) {
-    debugger;
-    console.log(this.jiraService.getTasks(sprintId));
+    this.loadingScreen.show("loading in progress");
+    var ticketsId = this.jiraService.getTasksIds(sprintId);
+    this.jiraService.getTasksDetails(ticketsId).then(function(tasksDetails) {
+        this.loadingScreen.hide();
+        this.taskSelectionPanel.setTickets(tasksDetails);
+    }.bind(this));
 };
 
 document.registerElement('selection-page', {prototype: SelectionPage});
@@ -342,6 +349,18 @@ TaskSelectionPanel.attachedCallback = function() {
     this.appendChild(template);
 };
 
+TaskSelectionPanel.setTickets = function (tickets) {
+	for (var i = 0, len = tickets.length ; i < len ; i++) {
+		this.appendChild(this._createTaskItem(tickets[i]));
+	}
+};
+
+TaskSelectionPanel._createTaskItem = function (taskParams) {
+	var taskItem = document.createElement("div");
+	taskItem.textContent = taskParams.key + " " + taskParams.fields.summary;
+	return taskItem;
+};
+
 document.registerElement('jcm-task-selection-panel', {prototype: TaskSelectionPanel});
 
 },{"./../../services/emitr":14,"./../../services/templateService":16}],12:[function(require,module,exports){
@@ -354,6 +373,9 @@ module.exports = {
 	},
 	"SPRINT_PANEL": {
 		"SPRINT_SELECTED": "sprint-selected"
+	},
+	"TASK_PANEL": {
+		"TASK_SELECTED": "task-selected"
 	}
 };
 },{}],13:[function(require,module,exports){
@@ -634,6 +656,7 @@ JiraService.prototype.getSprints = function (rapidviewId) {
             if (xhr.readyState == 4) {
                 if (xhr.status === 200) {
                     this.sprints = JSON.parse(xhr.responseText).sprints;
+                    debugger;
                     resolve(this.sprints);
                 } else {
                     reject();
@@ -646,12 +669,46 @@ JiraService.prototype.getSprints = function (rapidviewId) {
     }.bind(this));
 };
 
-JiraService.prototype.getTasks = function (sprintId) {
+JiraService.prototype.getTasksIds = function (sprintId) {
     for (var i = 0, len = this.sprints.length ; i < len ; i++) {
         if (this.sprints[i].id == sprintId) {
             return this.sprints[i].issuesIds;
         }
     }
+};
+
+JiraService.prototype._jiraIdToString = function (jiraIds) {
+    var retunValue = "";
+
+    for (var i = 0, len = jiraIds.length ; i < len ; i++) {
+        if (i != 0) {
+            retunValue = retunValue + "+or+";
+        }
+        retunValue = retunValue + "issue=" + jiraIds[i];
+    }
+    return retunValue;
+};
+
+JiraService.prototype.getTasksDetails = function (tasksId) {
+    return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("GET", "https://cors-anywhere.herokuapp.com/https://jira.caplin.com/rest/api/latest/search?jql=" + this._jiraIdToString(tasksId) + "&maxResults=1000");
+        xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
+
+        xhr.onreadystatechange = function(response) {
+            if (xhr.readyState == 4) {
+                if (xhr.status === 200) {
+                    resolve(JSON.parse(xhr.responseText).issues);
+                } else {
+                    reject();
+                }
+            }
+        }.bind(this);
+
+        xhr.setRequestHeader("x-requested-with", "love");
+        xhr.send();
+    }.bind(this));
 };
 
 module.exports = JiraService;

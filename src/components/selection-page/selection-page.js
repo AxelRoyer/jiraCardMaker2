@@ -33,6 +33,9 @@ SelectionPage.attachedCallback = function() {
     this.sprintSelectionPanel = this.querySelector("jcm-sprint-selection-panel");
     this.sprintSelectionPanel.on(EVENTS.SPRINT_PANEL.SPRINT_SELECTED, this._onSprintSelected, this);
 
+    this.taskSelectionPanel = this.querySelector("jcm-task-selection-panel");
+    this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASK_SELECTED, this._ontaskSelected, this);
+
     this.loadingScreen = this.querySelector("loading-screen");
 };
 
@@ -53,7 +56,12 @@ SelectionPage._onBoardSelected = function (boardId) {
 };
 
 SelectionPage._onSprintSelected = function (sprintId) {
-    console.log(this.jiraService.getTasks(sprintId));
+    this.loadingScreen.show("loading in progress");
+    var ticketsId = this.jiraService.getTasksIds(sprintId);
+    this.jiraService.getTasksDetails(ticketsId).then(function(tasksDetails) {
+        this.loadingScreen.hide();
+        this.taskSelectionPanel.setTickets(tasksDetails);
+    }.bind(this));
 };
 
 document.registerElement('selection-page', {prototype: SelectionPage});

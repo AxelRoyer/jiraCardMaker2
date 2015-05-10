@@ -7,5 +7,8 @@ module.exports = {
 	},
 	"SPRINT_PANEL": {
 		"SPRINT_SELECTED": "sprint-selected"
+	},
+	"TASK_PANEL": {
+		"TASK_SELECTED": "task-selected"
 	}
 };

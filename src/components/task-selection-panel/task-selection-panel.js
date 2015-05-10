@@ -16,4 +16,16 @@ TaskSelectionPanel.attachedCallback = function() {
     this.appendChild(template);
 };
 
+TaskSelectionPanel.setTickets = function (tickets) {
+	for (var i = 0, len = tickets.length ; i < len ; i++) {
+		this.appendChild(this._createTaskItem(tickets[i]));
+	}
+};
+
+TaskSelectionPanel._createTaskItem = function (taskParams) {
+	var taskItem = document.createElement("div");
+	taskItem.textContent = taskParams.key + " " + taskParams.fields.summary;
+	return taskItem;
+};
+
 document.registerElement('jcm-task-selection-panel', {prototype: TaskSelectionPanel});
