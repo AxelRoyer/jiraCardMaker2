@@ -1,0 +1,63 @@
+task-selection-row {
+	display: block;
+	background-color: lightgray;
+	position: relative;
+	padding-right: 1rem;
+
+	.task-id, .task-title, .task-details-button {
+		display: inline-block;
+		height: 100%;
+	}
+
+	> .task-header {
+		height: 1.3rem;
+		line-height: 1.4rem;
+		display: flex;
+		font-size: 0.8rem;
+		white-space: nowrap;
+
+		label {
+			width: 1rem;
+		}
+
+		.task-id {
+			width: 5rem;
+			text-align: center;
+		}
+
+		.task-title {
+			width: calc(100% - 6rem);
+			overflow: auto;
+  			text-overflow: ellipsis;
+  			white-space: nowrap;
+  			color: gray;
+		}
+
+		.task-details-button {
+			width: 1rem;
+			height: 1rem;
+			position: absolute;
+			right: 0.1rem;
+			top: 0.1rem;
+			background: url("./images/arrow.svg");
+			background-size: contain;
+			display: none;
+
+			&.expanded {
+				transform: rotate(-180deg);
+			}
+		}
+	}
+
+	> .task-details {
+		display: none;
+	}
+
+	.task-subtasks {
+		margin-left: 1rem;
+
+		> task-selection-row + task-selection-row {
+			margin-top: 0;
+		}
+	}
+}
