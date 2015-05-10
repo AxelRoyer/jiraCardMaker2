@@ -446,6 +446,7 @@ SelectionPage.attachedCallback = function() {
 };
 
 SelectionPage._onAuthenticationSubmitted = function(parameters) {
+    this.jiraService.setAuthenticationDetails(parameters);
 	this.loadingScreen.show("loading in progress");
     this.jiraService.getBoards().then(function(boards) {
     	this.boardSelectionPanel.setBoards(boards);
@@ -949,7 +950,7 @@ JiraService.prototype.getBoards = function () {
     return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest();
 
-        xhr.open("GET", "https://cors-anywhere.herokuapp.com/https://jira.caplin.com/rest/greenhopper/1.0/rapidviews/viewsData.json");
+        xhr.open("GET", "https://cors-anywhere.herokuapp.com/" + this.url + "/rest/greenhopper/1.0/rapidviews/viewsData.json");
         xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
 
         xhr.onreadystatechange = function(response) {
@@ -971,7 +972,7 @@ JiraService.prototype.getSprints = function (rapidviewId) {
     return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest();
 
-        xhr.open("GET", "https://cors-anywhere.herokuapp.com/https://jira.caplin.com/rest/greenhopper/1.0/xboard/plan/backlog/data.json?rapidViewId=80");
+        xhr.open("GET", "https://cors-anywhere.herokuapp.com/" + this.url + "/rest/greenhopper/1.0/xboard/plan/backlog/data.json?rapidViewId=" + rapidviewId);
         xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
 
         xhr.onreadystatechange = function(response) {
@@ -1014,7 +1015,7 @@ JiraService.prototype.getTasksDetails = function (tasksId) {
     return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest();
 
-        xhr.open("GET", "https://cors-anywhere.herokuapp.com/https://jira.caplin.com/rest/api/latest/search?jql=" + this._jiraIdToString(tasksId) + "&maxResults=1000");
+        xhr.open("GET", "https://cors-anywhere.herokuapp.com/" + this.url + "/rest/api/latest/search?jql=" + this._jiraIdToString(tasksId) + "&maxResults=1000");
         xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
 
         xhr.onreadystatechange = function(response) {

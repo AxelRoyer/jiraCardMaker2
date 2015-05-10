@@ -40,6 +40,7 @@ SelectionPage.attachedCallback = function() {
 };
 
 SelectionPage._onAuthenticationSubmitted = function(parameters) {
+    this.jiraService.setAuthenticationDetails(parameters);
 	this.loadingScreen.show("loading in progress");
     this.jiraService.getBoards().then(function(boards) {
     	this.boardSelectionPanel.setBoards(boards);
