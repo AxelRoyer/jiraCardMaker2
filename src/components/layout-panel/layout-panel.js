@@ -82,6 +82,7 @@ LayoutPanel.attachedCallback = function() {
 LayoutPanel._onLayoutOptionsChanged = function (config) {
     this._config.parameters = config;
     this._cardExample.updateConfig(this._config.parameters);
+    this.trigger(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._config.parameters);
 };
 
 document.registerElement('jcm-layout-panel', {prototype: LayoutPanel});

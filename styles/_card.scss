@@ -5,7 +5,7 @@ $ticket-border: 2px solid black !default;
 $ticket-header-height: 50px;
 
 jcm-card {
-	display: block;
+	display: inline-block;
 	width: $ticket-width;
 	height: $ticket-height;
 	background-color: white;

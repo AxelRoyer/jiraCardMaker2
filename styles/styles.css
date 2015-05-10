@@ -67,6 +67,12 @@ print-page {
   background-color: white;
   display: none; }
 
+selection-print-page {
+  position: relative;
+  margin: 0.5rem; }
+  selection-print-page jcm-card {
+    margin: 0.5rem; }
+
 selection-page {
   display: block;
   min-height: 100%;
@@ -197,7 +203,7 @@ loading-screen {
     text-align: center; }
 
 jcm-card {
-  display: block;
+  display: inline-block;
   width: 310px;
   height: 300px;
   background-color: white;

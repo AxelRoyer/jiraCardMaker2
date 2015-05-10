@@ -44,8 +44,8 @@ TaskSelectionPanel._onPrintButtonClicked = function () {
 	//TODO Bad design, need to refactor
 	var selectedTasks = [];
 
-	for (var i = 0, len = this.tasksItems.length ; i < len ; i++) {
-		var selectedItem = this.tasksItems[i].isSelected();
+	for (var i = 0, len = this.taskItems.length ; i < len ; i++) {
+		var selectedItem = this.taskItems[i].isSelected();
 		if (selectedItem !== false) {
 			selectedTasks .push(selectedItem);
 		}

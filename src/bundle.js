@@ -187,6 +187,8 @@ Card._updateUI = function () {
 	    	this._parentProjectContainer.textContent = this._data.parent.split("-")[0];
 	    }
 
+	    debugger;
+
 	    this._priorityContainer.classList.remove(this._priority);
 	    this._priority = "priority" + this._data.fields.priority.id;
 	    this._priorityContainer.classList.add(this._priority);
@@ -196,8 +198,6 @@ Card._updateUI = function () {
 	    this._summaryContainer.textContent = this._data.fields.summary;
 
 	   	this._qrcodeContainer.src = "http://qr.kaywa.com/?s=8&d=" + "https://jira.caplin.com/browse/" + this._data.key;
-
-	   	debugger;
 
 	    if (this._data.parent) {
 		    this._parentIdContainer.style.visibility = this._config.parent.checked === true ? "visible" : "hidden";
@@ -349,6 +349,7 @@ LayoutPanel.attachedCallback = function() {
 LayoutPanel._onLayoutOptionsChanged = function (config) {
     this._config.parameters = config;
     this._cardExample.updateConfig(this._config.parameters);
+    this.trigger(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._config.parameters);
 };
 
 document.registerElement('jcm-layout-panel', {prototype: LayoutPanel});
@@ -395,7 +396,6 @@ PrintPage.show = function (params) {
     for (var i = 0, len = params.tasks.length ; i < len ; i++) {
         var card = document.createElement("jcm-card");
         this.appendChild(card);
-
         card.updateData(params.tasks[i]);
         card.updateConfig(params.config);
     }
@@ -424,6 +424,40 @@ SelectionPage.createdCallback = function() {
 	this.authenticationPanel = null;
 	this.loadingScreen = null;
 	this.jiraService = new JiraService();
+    this._layoutConfig = {
+        color: {
+            label: "Color",
+            checked: true
+        },
+        qrcode: {
+            label: "QR Code",
+            checked: true
+        },
+        parent: {
+            label: "Parent",
+            checked: true
+        },
+        component: {
+            label: "Component",
+            checked: false
+        },
+        epic: {
+            label: "Epic",
+            checked: true
+        },
+        priority: {
+            label: "Priority",
+            checked: true
+        },
+        version: {
+            label: "Version",
+            checked: false
+        },
+        estimate: {
+            label: "Estimate task point",
+            checked: true
+        }
+    };
 };
 
 SelectionPage.attachedCallback = function() {
@@ -441,6 +475,9 @@ SelectionPage.attachedCallback = function() {
 
     this.taskSelectionPanel = this.querySelector("jcm-task-selection-panel");
     this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASKS_SELECTED, this._ontaskSelected, this);
+
+    this.layoutPanel = this.querySelector("jcm-layout-panel");
+    this.layoutPanel.on(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._ontaskSelected, this);
 
     this.loadingScreen = this.querySelector("loading-screen");
 };
@@ -462,6 +499,10 @@ SelectionPage._onBoardSelected = function (boardId) {
     }.bind(this));
 };
 
+SelectionPage._onLayoutOptionsChanged = function (params) {
+    this._layoutConfig = params;
+};
+
 SelectionPage.hide = function () {
     this.style.display = "none";
 };
@@ -478,15 +519,7 @@ SelectionPage._onSprintSelected = function (sprintId) {
 SelectionPage._ontaskSelected = function (selectedTasks) {
     this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, {
         tasks: selectedTasks, 
-        config: {
-            key: true,
-            title: true,
-            summary: true,
-            epic: true,
-            priority: true,
-            estimate: true,
-            parent: true
-        }
+        config: this._layoutConfig
     });
 };
 
@@ -589,8 +622,8 @@ TaskSelectionPanel._onPrintButtonClicked = function () {
 	//TODO Bad design, need to refactor
 	var selectedTasks = [];
 
-	for (var i = 0, len = this.tasksItems.length ; i < len ; i++) {
-		var selectedItem = this.tasksItems[i].isSelected();
+	for (var i = 0, len = this.taskItems.length ; i < len ; i++) {
+		var selectedItem = this.taskItems[i].isSelected();
 		if (selectedItem !== false) {
 			selectedTasks .push(selectedItem);
 		}

@@ -48,6 +48,8 @@ Card._updateUI = function () {
 	    	this._parentProjectContainer.textContent = this._data.parent.split("-")[0];
 	    }
 
+	    debugger;
+
 	    this._priorityContainer.classList.remove(this._priority);
 	    this._priority = "priority" + this._data.fields.priority.id;
 	    this._priorityContainer.classList.add(this._priority);
@@ -57,8 +59,6 @@ Card._updateUI = function () {
 	    this._summaryContainer.textContent = this._data.fields.summary;
 
 	   	this._qrcodeContainer.src = "http://qr.kaywa.com/?s=8&d=" + "https://jira.caplin.com/browse/" + this._data.key;
-
-	   	debugger;
 
 	    if (this._data.parent) {
 		    this._parentIdContainer.style.visibility = this._config.parent.checked === true ? "visible" : "hidden";

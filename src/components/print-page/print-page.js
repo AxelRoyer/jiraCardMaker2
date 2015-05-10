@@ -14,7 +14,6 @@ PrintPage.show = function (params) {
     for (var i = 0, len = params.tasks.length ; i < len ; i++) {
         var card = document.createElement("jcm-card");
         this.appendChild(card);
-
         card.updateData(params.tasks[i]);
         card.updateConfig(params.config);
     }

@@ -45,3 +45,12 @@ print-page {
 	background-color: white;
 	display: none;
 }
+
+selection-print-page {
+	position: relative;
+  	margin: 0.5rem;
+
+  	jcm-card {
+  		margin: 0.5rem;
+  	}
+}

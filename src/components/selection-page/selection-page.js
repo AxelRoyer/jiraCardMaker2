@@ -18,6 +18,40 @@ SelectionPage.createdCallback = function() {
 	this.authenticationPanel = null;
 	this.loadingScreen = null;
 	this.jiraService = new JiraService();
+    this._layoutConfig = {
+        color: {
+            label: "Color",
+            checked: true
+        },
+        qrcode: {
+            label: "QR Code",
+            checked: true
+        },
+        parent: {
+            label: "Parent",
+            checked: true
+        },
+        component: {
+            label: "Component",
+            checked: false
+        },
+        epic: {
+            label: "Epic",
+            checked: true
+        },
+        priority: {
+            label: "Priority",
+            checked: true
+        },
+        version: {
+            label: "Version",
+            checked: false
+        },
+        estimate: {
+            label: "Estimate task point",
+            checked: true
+        }
+    };
 };
 
 SelectionPage.attachedCallback = function() {
@@ -35,6 +69,9 @@ SelectionPage.attachedCallback = function() {
 
     this.taskSelectionPanel = this.querySelector("jcm-task-selection-panel");
     this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASKS_SELECTED, this._ontaskSelected, this);
+
+    this.layoutPanel = this.querySelector("jcm-layout-panel");
+    this.layoutPanel.on(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._ontaskSelected, this);
 
     this.loadingScreen = this.querySelector("loading-screen");
 };
@@ -56,6 +93,10 @@ SelectionPage._onBoardSelected = function (boardId) {
     }.bind(this));
 };
 
+SelectionPage._onLayoutOptionsChanged = function (params) {
+    this._layoutConfig = params;
+};
+
 SelectionPage.hide = function () {
     this.style.display = "none";
 };
@@ -72,15 +113,7 @@ SelectionPage._onSprintSelected = function (sprintId) {
 SelectionPage._ontaskSelected = function (selectedTasks) {
     this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, {
         tasks: selectedTasks, 
-        config: {
-            key: true,
-            title: true,
-            summary: true,
-            epic: true,
-            priority: true,
-            estimate: true,
-            parent: true
-        }
+        config: this._layoutConfig
     });
 };
 
