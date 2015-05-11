@@ -48,8 +48,6 @@ Card._updateUI = function () {
 	    	this._parentProjectContainer.textContent = this._data.parent.split("-")[0];
 	    }
 
-	    debugger;
-
 	    this._priorityContainer.classList.remove(this._priority);
 	    this._priority = "priority" + this._data.fields.priority.id;
 	    this._priorityContainer.classList.add(this._priority);

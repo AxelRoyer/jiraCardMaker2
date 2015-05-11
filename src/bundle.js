@@ -477,7 +477,7 @@ SelectionPage.attachedCallback = function() {
     this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASKS_SELECTED, this._ontaskSelected, this);
 
     this.layoutPanel = this.querySelector("jcm-layout-panel");
-    this.layoutPanel.on(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._ontaskSelected, this);
+    this.layoutPanel.on(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._onLayoutOptionsChanged, this);
 
     this.loadingScreen = this.querySelector("loading-screen");
 };
