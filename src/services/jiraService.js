@@ -22,11 +22,9 @@ JiraService.prototype.getBoards = function () {
         xhr.onreadystatechange = function(response) {
             if (xhr.readyState == 4) {
                 if (xhr.status === 200) {
-                    Promise.resolve(JSON.parse(xhr.responseText).views);
+                    resolve(JSON.parse(xhr.responseText).views);
                 } else {
-                    debugger;
-                    // throw new Error("wrong password");
-                    Promise.reject();
+                    reject(xhr.status);
                 }
             }
         };

@@ -488,16 +488,16 @@ SelectionPage._onAuthenticationSubmitted = function(parameters) {
 
     var callBacks = {
         success: function(boards) {
-            debugger;
             self.boardSelectionPanel.setBoards(boards);
             self.loadingScreen.hide();
         },
         error: function(error) {
-            debugger;
+            self.loadingScreen.hide();
+            alert("Authentication failed");
         }
     };
 
-    this.jiraService.getBoards().then(callBacks.success, function() {debugger});;
+    this.jiraService.getBoards().then(callBacks.success, callBacks.error);
 };
 
 SelectionPage._onBoardSelected = function (boardId) {
@@ -999,11 +999,9 @@ JiraService.prototype.getBoards = function () {
         xhr.onreadystatechange = function(response) {
             if (xhr.readyState == 4) {
                 if (xhr.status === 200) {
-                    Promise.resolve(JSON.parse(xhr.responseText).views);
+                    resolve(JSON.parse(xhr.responseText).views);
                 } else {
-                    debugger;
-                    // throw new Error("wrong password");
-                    Promise.reject();
+                    reject(xhr.status);
                 }
             }
         };

@@ -84,16 +84,16 @@ SelectionPage._onAuthenticationSubmitted = function(parameters) {
 
     var callBacks = {
         success: function(boards) {
-            debugger;
             self.boardSelectionPanel.setBoards(boards);
             self.loadingScreen.hide();
         },
         error: function(error) {
-            debugger;
+            self.loadingScreen.hide();
+            alert("Authentication failed");
         }
     };
 
-    this.jiraService.getBoards().then(callBacks.success, function() {debugger});;
+    this.jiraService.getBoards().then(callBacks.success, callBacks.error);
 };
 
 SelectionPage._onBoardSelected = function (boardId) {
