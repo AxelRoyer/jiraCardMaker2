@@ -79,10 +79,21 @@ SelectionPage.attachedCallback = function() {
 SelectionPage._onAuthenticationSubmitted = function(parameters) {
     this.jiraService.setAuthenticationDetails(parameters);
 	this.loadingScreen.show("loading in progress");
-    this.jiraService.getBoards().then(function(boards) {
-    	this.boardSelectionPanel.setBoards(boards);
-    	this.loadingScreen.hide();
-    }.bind(this));
+
+    var self = this;
+
+    var callBacks = {
+        success: function(boards) {
+            debugger;
+            self.boardSelectionPanel.setBoards(boards);
+            self.loadingScreen.hide();
+        },
+        error: function(error) {
+            debugger;
+        }
+    };
+
+    this.jiraService.getBoards().then(callBacks.success, function() {debugger});;
 };
 
 SelectionPage._onBoardSelected = function (boardId) {

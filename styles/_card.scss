@@ -38,11 +38,9 @@ jcm-card {
 		.task-container {
 			width: 40%;
 			display: inline-block;
-			background: red;
 
 			.task-id {
 				font-size: 2.5rem;
-				background: red;
 				border-width: 0 2px 2px 2px;
 				border-style: solid;
 				border-color: black;
@@ -105,6 +103,7 @@ jcm-card {
 
 	.task-summary {
 		padding: 0.5rem;
+		font-size: 25px;
 	}
 
 	.task-epic {

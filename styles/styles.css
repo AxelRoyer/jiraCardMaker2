@@ -229,11 +229,9 @@ jcm-card {
         height: 50%; }
     jcm-card header .task-container {
       width: 40%;
-      display: inline-block;
-      background: red; }
+      display: inline-block; }
       jcm-card header .task-container .task-id {
         font-size: 2.5rem;
-        background: red;
         border-width: 0 2px 2px 2px;
         border-style: solid;
         border-color: black; }
@@ -275,7 +273,8 @@ jcm-card {
         -webkit-mask-size: 35px;
         transform: rotate(90deg); }
   jcm-card .task-summary {
-    padding: 0.5rem; }
+    padding: 0.5rem;
+    font-size: 25px; }
   jcm-card .task-epic {
     padding: 0.2rem;
     border: 1px solid black;

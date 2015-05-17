@@ -483,10 +483,21 @@ SelectionPage.attachedCallback = function() {
 SelectionPage._onAuthenticationSubmitted = function(parameters) {
     this.jiraService.setAuthenticationDetails(parameters);
 	this.loadingScreen.show("loading in progress");
-    this.jiraService.getBoards().then(function(boards) {
-    	this.boardSelectionPanel.setBoards(boards);
-    	this.loadingScreen.hide();
-    }.bind(this));
+
+    var self = this;
+
+    var callBacks = {
+        success: function(boards) {
+            debugger;
+            self.boardSelectionPanel.setBoards(boards);
+            self.loadingScreen.hide();
+        },
+        error: function(error) {
+            debugger;
+        }
+    };
+
+    this.jiraService.getBoards().then(callBacks.success, function() {debugger});;
 };
 
 SelectionPage._onBoardSelected = function (boardId) {
@@ -978,25 +989,28 @@ JiraService.prototype.setAuthenticationDetails = function (params) {
 };
 
 JiraService.prototype.getBoards = function () {
+    var self = this;
     return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest();
 
-        xhr.open("GET", "https://cors-anywhere.herokuapp.com/" + this.url + "/rest/greenhopper/1.0/rapidviews/viewsData.json");
-        xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
+        xhr.open("GET", "https://cors-anywhere.herokuapp.com/" + self.url + "/rest/greenhopper/1.0/rapidviews/viewsData.json");
+        xhr.setRequestHeader("Authorization", "Basic " + btoa(self.username + ":" + self.password));
 
         xhr.onreadystatechange = function(response) {
             if (xhr.readyState == 4) {
                 if (xhr.status === 200) {
-                    resolve(JSON.parse(xhr.responseText).views);
+                    Promise.resolve(JSON.parse(xhr.responseText).views);
                 } else {
-                    reject();
+                    debugger;
+                    // throw new Error("wrong password");
+                    Promise.reject();
                 }
             }
         };
 
         xhr.setRequestHeader("x-requested-with", "love");
         xhr.send();
-    }.bind(this));
+    });
 };
 
 JiraService.prototype.getSprints = function (rapidviewId) {
