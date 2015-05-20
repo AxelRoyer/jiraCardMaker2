@@ -603,7 +603,8 @@ TaskSelectionPanel.createdCallback = function() {
 	this.printButton = null;
 	this.selectAllButton = null;
 	this.unSelectAllButton = null;
-	this.taskItems = [];
+	this._selectedTaskItems = {};
+	this._taskItems = [];
 };
 
 TaskSelectionPanel.attachedCallback = function() {
@@ -623,32 +624,41 @@ TaskSelectionPanel.setTickets = function (tickets) {
 	for (var i = 0, len = tickets.length ; i < len ; i++) {
 		var taskItem = this._createTaskItem(tickets[i]);
 		this.taskContainer.appendChild(taskItem);
-		this.taskItems.push(taskItem);
+		this._taskItems.push(taskItem);
 	}
 };
 
 TaskSelectionPanel._onPrintButtonClicked = function () {
-	//TODO Bad design, need to refactor
-	var selectedTasks = [];
+	var tasksToPrint = [];
 
-	for (var i = 0, len = this.taskItems.length ; i < len ; i++) {
-		var selectedItem = this.taskItems[i].isSelected();
-		if (selectedItem !== false) {
-			selectedTasks .push(selectedItem);
-		}
+	var tasksIds = Object.keys(this._selectedTaskItems);
+
+	for (var i = 0, len = tasksIds.length ; i < len ; i++) {
+		tasksToPrint.push(this._selectedTaskItems[tasksIds[i]].data);
 	}
 
-	this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, selectedTasks);
+	this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, tasksToPrint);
 };
 
 TaskSelectionPanel._toogleTaskSelection = function (value) {
-	for (var i = 0, len = this.taskItems.length ; i < len ; i++) {
-		this.taskItems[i].toggleCheckedValue(value);
+	for (var i = 0, len = this._taskItems.length ; i < len ; i++) {
+		this._taskItems[i].toggleCheckedValue(value);
+	}
+};
+
+TaskSelectionPanel._onSelectionChanged = function (item) {
+	if (item.selected === false) {
+		delete this._selectedTaskItems[item.key];
+	} else {
+		this._selectedTaskItems[item.key] = item;
 	}
 };
 
 TaskSelectionPanel._createTaskItem = function (taskParams) {
 	var taskItem = document.createElement("task-selection-row");
+	taskItem.dataset.level = 0;
+	var event = EVENTS.TASK_PANEL.TASKS_SELECTED + "_" + taskItem.dataset.level;
+	taskItem.on(event, this._onSelectionChanged, this);
 	taskItem.setData(taskParams);
 	return taskItem;
 };
@@ -678,10 +688,13 @@ TaskSelectionRow.createdCallback = function () {
  	this.taskDetailsContainer = this.querySelector(".task-details");
  	this.checkbox = this.querySelector("input[type='checkbox'");
  	this.areDetailsDisplayed = false;
+ 	this._isSelected = false;
+ 	this._data = null;
 };
 
 TaskSelectionRow.attachedCallback = function () {
 	this.detailsButton.addEventListener("click", this._onDetailsButtonClicked.bind(this), false);
+	this.checkbox.addEventListener("change", this.toggleCheckedValue.bind(this, !this.checkbox.checked), false);
 };
 
 TaskSelectionRow._onDetailsButtonClicked = function () {
@@ -693,7 +706,13 @@ TaskSelectionRow._onDetailsButtonClicked = function () {
 
 TaskSelectionRow.toggleCheckedValue = function (value) {
 	this.checkbox.checked = value;
-}
+	var event = EVENTS.TASK_PANEL.TASKS_SELECTED +"_" + this.dataset.level;
+	this.trigger(event, {key: this._data.key, data: this._data, selected: value});
+};
+
+TaskSelectionRow._onSubtaskSelection = function (subTask) {
+	this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, subTask);
+};
 
 TaskSelectionRow.isSelected = function () {
 	if (this.checkbox.checked === true) {
@@ -716,8 +735,12 @@ TaskSelectionRow.setData = function (data) {
  		this.detailsButton.style.display = "block";
 
  		for (var i = 0, len = subtasks.length ; i < len ; i++) {
+ 			var data = subtasks[i];
+ 			data.parent = this.key;
  			subtaskItem = document.createElement("task-selection-row");
- 			subtaskItem.setData(subtasks[i]);
+ 			subtaskItem.dataset.level = this.dataset.level++;
+ 			subtaskItem.on(EVENTS.TASK_PANEL.TASKS_SELECTED + (this.dataset.level++), this._onSubtaskSelection, this);
+ 			subtaskItem.setData(data);
  			this.taskSubTaskContainer.appendChild(subtaskItem);
  		}
  	}

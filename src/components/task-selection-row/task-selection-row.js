@@ -20,10 +20,13 @@ TaskSelectionRow.createdCallback = function () {
  	this.taskDetailsContainer = this.querySelector(".task-details");
  	this.checkbox = this.querySelector("input[type='checkbox'");
  	this.areDetailsDisplayed = false;
+ 	this._isSelected = false;
+ 	this._data = null;
 };
 
 TaskSelectionRow.attachedCallback = function () {
 	this.detailsButton.addEventListener("click", this._onDetailsButtonClicked.bind(this), false);
+	this.checkbox.addEventListener("change", this.toggleCheckedValue.bind(this, !this.checkbox.checked), false);
 };
 
 TaskSelectionRow._onDetailsButtonClicked = function () {
@@ -35,7 +38,13 @@ TaskSelectionRow._onDetailsButtonClicked = function () {
 
 TaskSelectionRow.toggleCheckedValue = function (value) {
 	this.checkbox.checked = value;
-}
+	var event = EVENTS.TASK_PANEL.TASKS_SELECTED +"_" + this.dataset.level;
+	this.trigger(event, {key: this._data.key, data: this._data, selected: value});
+};
+
+TaskSelectionRow._onSubtaskSelection = function (subTask) {
+	this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, subTask);
+};
 
 TaskSelectionRow.isSelected = function () {
 	if (this.checkbox.checked === true) {
@@ -58,8 +67,12 @@ TaskSelectionRow.setData = function (data) {
  		this.detailsButton.style.display = "block";
 
  		for (var i = 0, len = subtasks.length ; i < len ; i++) {
+ 			var data = subtasks[i];
+ 			data.parent = this.key;
  			subtaskItem = document.createElement("task-selection-row");
- 			subtaskItem.setData(subtasks[i]);
+ 			subtaskItem.dataset.level = this.dataset.level++;
+ 			subtaskItem.on(EVENTS.TASK_PANEL.TASKS_SELECTED + (this.dataset.level++), this._onSubtaskSelection, this);
+ 			subtaskItem.setData(data);
  			this.taskSubTaskContainer.appendChild(subtaskItem);
  		}
  	}
