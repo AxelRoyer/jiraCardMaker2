@@ -55,7 +55,7 @@ TaskSelectionPanel._onPrintButtonClicked = function () {
 
 TaskSelectionPanel._toogleTaskSelection = function (value) {
 	for (var i = 0, len = this._taskItems.length ; i < len ; i++) {
-		this._taskItems[i].toggleCheckedValue(value);
+		this._taskItems[i].toggleCheckedValue(value, true);
 	}
 };
 
