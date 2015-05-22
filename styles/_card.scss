@@ -12,6 +12,8 @@ jcm-card {
 	border: $ticket-border;
 	margin: 0 auto;
 	position: relative;
+	float: left;
+	page-break-inside: avoid;
 
 	header {
 		display: flex;

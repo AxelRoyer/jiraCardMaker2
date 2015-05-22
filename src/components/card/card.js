@@ -77,8 +77,12 @@ Card._updateUI = function () {
 		}
 
 		epicConfig = this._getEpicConfig(this._data.fields.customfield_10870);
-	    this._epicContainer.textContent = epicConfig.epicLabel;
-	    this._epicContainer.style.background = epicConfig.color; 
+		if (epicConfig) {
+	    	this._epicContainer.textContent = epicConfig.epicLabel;
+	    	this._epicContainer.style.background = epicConfig.color; 
+		} else {
+			this._epicContainer.style.display = "none";
+		}
 
 	    this._estimateContainer.style.visibility = this._cardLayoutConfig.estimate.checked === true ? "visible" : "hidden";;
 	    this._qrcodeContainer.style.visibility = this._cardLayoutConfig.qrcode.checked === true ? "visible" : "hidden";;

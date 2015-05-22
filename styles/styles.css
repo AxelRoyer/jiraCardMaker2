@@ -68,7 +68,8 @@ print-page {
 
 selection-print-page {
   position: relative;
-  margin: 0.5rem; }
+  margin: 0.5rem;
+  clear: both; }
   selection-print-page jcm-card {
     margin: 0.5rem; }
 
@@ -208,7 +209,9 @@ jcm-card {
   background-color: white;
   border: 2px solid black;
   margin: 0 auto;
-  position: relative; }
+  position: relative;
+  float: left;
+  page-break-inside: avoid; }
   jcm-card header {
     display: flex;
     height: 15%;
