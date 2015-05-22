@@ -5,7 +5,7 @@ var Card = Object.create(HTMLElement.prototype);
 
 Card.createdCallback = function () {
 	this._data = null;
-	this._config = null;
+	this._cardLayoutConfig = null;
 	this._priority = null;
 };
 
@@ -33,12 +33,26 @@ Card.updateData = function (data) {
 };
 
 Card.updateConfig = function (config) {
-	this._config = config;
+	this._cardLayoutConfig = config.layoutConfig;
+	this._epicConfig = config.epicConfig;
 	this._updateUI();
 };
 
+Card._getEpicConfig = function (epicId) {
+	if (!epicId) {
+		return false;
+	}
+
+	for (var i = 0, len = this._epicConfig.epics.length ; i < len ; i++) {
+		if (this._epicConfig.epics[i].key === epicId) {
+			return this._epicConfig.epics[i];
+		}
+	}
+};
+
 Card._updateUI = function () {
-	if (this._config && this._data) {
+	var epicConfig = null;
+	if (this._cardLayoutConfig && this._data) {
 
 	    this._taskIdContainer.textContent = this._data.key.split("-")[1];
 	    this._taskProjectContainer.textContent = this._data.key.split("-")[0];
@@ -53,20 +67,23 @@ Card._updateUI = function () {
 	    this._priorityContainer.classList.add(this._priority);
 
 	    this._estimateContainer.textContent = this._data.fields.customfield_10243;
-	    this._epicContainer.textContent = this._data.epic;
 	    this._summaryContainer.textContent = this._data.fields.summary;
 
 	   	this._qrcodeContainer.src = "http://qr.kaywa.com/?s=8&d=" + "https://jira.caplin.com/browse/" + this._data.key;
 
 	    if (this._data.parent) {
-		    this._parentIdContainer.style.visibility = this._config.parent.checked === true ? "visible" : "hidden";
-		    this._parentProjectContainer.style.visibility = this._config.parent.checked === true ? "visible" : "hidden";;
+		    this._parentIdContainer.style.visibility = this._cardLayoutConfig.parent.checked === true ? "visible" : "hidden";
+		    this._parentProjectContainer.style.visibility = this._cardLayoutConfig.parent.checked === true ? "visible" : "hidden";;
 		}
 
-	    this._estimateContainer.style.visibility = this._config.estimate.checked === true ? "visible" : "hidden";;
-	    this._qrcodeContainer.style.visibility = this._config.qrcode.checked === true ? "visible" : "hidden";;
-	    this._epicContainer.style.visibility = this._config.epic.checked === true ? "visible" : "hidden";;
-	    this._priorityContainer.style.visibility = this._config.priority.checked === true ? "visible" : "hidden";;
+		epicConfig = this._getEpicConfig(this._data.fields.customfield_10870);
+	    this._epicContainer.textContent = epicConfig.epicLabel;
+	    this._epicContainer.style.background = epicConfig.color; 
+
+	    this._estimateContainer.style.visibility = this._cardLayoutConfig.estimate.checked === true ? "visible" : "hidden";;
+	    this._qrcodeContainer.style.visibility = this._cardLayoutConfig.qrcode.checked === true ? "visible" : "hidden";;
+	    this._epicContainer.style.visibility = this._cardLayoutConfig.epic.checked === true ? "visible" : "hidden";;
+	    this._priorityContainer.style.visibility = this._cardLayoutConfig.priority.checked === true ? "visible" : "hidden";;
 	}
 };
 

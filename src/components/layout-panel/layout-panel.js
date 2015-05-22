@@ -76,7 +76,7 @@ LayoutPanel.attachedCallback = function() {
         }
     });
 
-   	this._cardExample.updateConfig(this._config.parameters);
+   	this._cardExample.updateConfig({layoutConfig: this._config.parameters});
 };
 
 LayoutPanel._onLayoutOptionsChanged = function (config) {

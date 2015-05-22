@@ -28,8 +28,7 @@ table {
 
 html, body {
   min-height: 100%;
-  font-family: arial;
-  height: 1px; }
+  font-family: arial; }
 
 * {
   box-sizing: border-box; }

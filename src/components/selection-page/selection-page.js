@@ -17,6 +17,7 @@ Emitr(SelectionPage);
 SelectionPage.createdCallback = function() {
 	this.authenticationPanel = null;
 	this.loadingScreen = null;
+    this._sprintConfig = null;
 	this.jiraService = new JiraService();
     this._layoutConfig = {
         color: {
@@ -98,8 +99,9 @@ SelectionPage._onAuthenticationSubmitted = function(parameters) {
 
 SelectionPage._onBoardSelected = function (boardId) {
 	this.loadingScreen.show("loading in progress");
-    this.jiraService.getSprints(boardId).then(function(sprints) {
-    	this.sprintSelectionPanel.setSprints(sprints);
+    this.jiraService.getSprints(boardId).then(function(sprintsConfig) {
+        this._sprintConfig = sprintsConfig;
+    	this.sprintSelectionPanel.setSprints(sprintsConfig.sprints);
     	this.loadingScreen.hide();
     }.bind(this));
 };
@@ -123,8 +125,11 @@ SelectionPage._onSprintSelected = function (sprintId) {
 
 SelectionPage._ontaskSelected = function (selectedTasks) {
     this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, {
-        tasks: selectedTasks, 
-        config: this._layoutConfig
+        tasks: selectedTasks,
+        config: {
+            layoutConfig: this._layoutConfig,
+            epicConfig: this._sprintConfig.epicData
+        } 
     });
 };
 

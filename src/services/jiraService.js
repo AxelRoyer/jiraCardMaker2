@@ -37,6 +37,7 @@ JiraService.prototype.getBoards = function () {
 JiraService.prototype.getSprints = function (rapidviewId) {
     return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest();
+        var response = null;
 
         xhr.open("GET", "https://cors-anywhere.herokuapp.com/" + this.url + "/rest/greenhopper/1.0/xboard/plan/backlog/data.json?rapidViewId=" + rapidviewId);
         xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
@@ -44,8 +45,9 @@ JiraService.prototype.getSprints = function (rapidviewId) {
         xhr.onreadystatechange = function(response) {
             if (xhr.readyState == 4) {
                 if (xhr.status === 200) {
-                    this.sprints = JSON.parse(xhr.responseText).sprints;
-                    resolve(this.sprints);
+                    response = JSON.parse(xhr.responseText);
+                    this.sprints = response.sprints;
+                    resolve(response);
                 } else {
                     reject();
                 }

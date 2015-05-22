@@ -61,7 +61,6 @@ TaskSelectionRow.isSelected = function () {
 };
 
 TaskSelectionRow.setData = function (data) {
-	debugger;
 	this._level = parseInt(this.dataset.level);
 	var nextLevel = this._level + 1;
 
