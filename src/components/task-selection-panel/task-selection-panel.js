@@ -46,6 +46,11 @@ TaskSelectionPanel._onPrintButtonClicked = function () {
 
 	var tasksIds = Object.keys(this._selectedTaskItems);
 
+	if (tasksIds.length === 0 ) {
+		alert("You need to select at least 1 task to print");
+		return;
+	}
+
 	for (var i = 0, len = tasksIds.length ; i < len ; i++) {
 		tasksToPrint.push(this._selectedTaskItems[tasksIds[i]].data);
 	}

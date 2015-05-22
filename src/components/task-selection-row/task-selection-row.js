@@ -40,7 +40,7 @@ TaskSelectionRow._onDetailsButtonClicked = function () {
 
 TaskSelectionRow.toggleCheckedValue = function (value, broadcast) {
 	this.checkbox.checked = value;
-	var event = EVENTS.TASK_PANEL.TASKS_SELECTED +"_" + this.dataset.level;
+	var event = EVENTS.TASK_PANEL.TASKS_SELECTED +"_" + this._level;
 	this.trigger(event, {key: this._data.key, data: this._data, selected: value});
 
 	for (var i = 0, len = this._subtasks.length ; i < len ;i++) {
@@ -49,7 +49,7 @@ TaskSelectionRow.toggleCheckedValue = function (value, broadcast) {
 };
 
 TaskSelectionRow._onSubtaskSelection = function (subTask) {
-	this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, subTask);
+	this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED + "_" + this._level, subTask);
 };
 
 TaskSelectionRow.isSelected = function () {
@@ -61,6 +61,10 @@ TaskSelectionRow.isSelected = function () {
 };
 
 TaskSelectionRow.setData = function (data) {
+	debugger;
+	this._level = parseInt(this.dataset.level);
+	var nextLevel = this._level + 1;
+
 	this._data = data;
 	this.taskId.textContent = data.key;
 	this.header.textContent = data.fields.summary;
@@ -76,9 +80,9 @@ TaskSelectionRow.setData = function (data) {
  			var data = subtasks[i];
  			data.parent = this.key;
  			subtaskItem = document.createElement("task-selection-row");
+ 			subtaskItem.dataset.level = nextLevel;
  			 this._subtasks.push(subtaskItem);
- 			subtaskItem.dataset.level = this.dataset.level++;
- 			subtaskItem.on(EVENTS.TASK_PANEL.TASKS_SELECTED + (this.dataset.level++), this._onSubtaskSelection, this);
+ 			subtaskItem.on(EVENTS.TASK_PANEL.TASKS_SELECTED + "_" + nextLevel, this._onSubtaskSelection, this);
  			subtaskItem.setData(data);
  			this.taskSubTaskContainer.appendChild(subtaskItem);
  		}
