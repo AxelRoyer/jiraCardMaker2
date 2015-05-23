@@ -433,7 +433,7 @@ var Emitr = require("./../../services/emitr");
 
 var templateService = require("./../../services/templateService");
 var SelectionPage = Object.create(HTMLElement.prototype);
-var JiraService = require("./../../services/jiraService");
+var JiraAdapter = require("./../../services/jiraAdapter");
 
 var EVENTS = require("../../events");
 
@@ -447,7 +447,7 @@ SelectionPage.createdCallback = function() {
 	this.authenticationPanel = null;
 	this.loadingScreen = null;
     this._sprintConfig = null;
-	this.jiraService = new JiraService();
+	this.jiraAdapter = new JiraAdapter();
     this._layoutConfig = {
         color: {
             label: "Color",
@@ -507,7 +507,7 @@ SelectionPage.attachedCallback = function() {
 };
 
 SelectionPage._onAuthenticationSubmitted = function(parameters) {
-    this.jiraService.setAuthenticationDetails(parameters);
+    this.jiraAdapter.setAuthenticationDetails(parameters);
 	this.loadingScreen.show("loading in progress");
 
     var self = this;
@@ -523,12 +523,12 @@ SelectionPage._onAuthenticationSubmitted = function(parameters) {
         }
     };
 
-    this.jiraService.getBoards().then(callBacks.success, callBacks.error);
+    this.jiraAdapter.getBoards().then(callBacks.success, callBacks.error);
 };
 
 SelectionPage._onBoardSelected = function (boardId) {
 	this.loadingScreen.show("loading in progress");
-    this.jiraService.getSprints(boardId).then(function(sprintsConfig) {
+    this.jiraAdapter.getSprints(boardId).then(function(sprintsConfig) {
         this._sprintConfig = sprintsConfig;
     	this.sprintSelectionPanel.setSprints(sprintsConfig.sprints);
     	this.loadingScreen.hide();
@@ -545,8 +545,8 @@ SelectionPage.hide = function () {
 
 SelectionPage._onSprintSelected = function (sprintId) {
     this.loadingScreen.show("loading in progress");
-    var ticketsId = this.jiraService.getTasksIds(sprintId);
-    this.jiraService.getTasksDetails(ticketsId).then(function(tasksDetails) {
+    var ticketsId = this.jiraAdapter.getTasksIds(sprintId);
+    this.jiraAdapter.getTasksDetails(ticketsId).then(function(tasksDetails) {
         this.loadingScreen.hide();
         this.taskSelectionPanel.setTickets(tasksDetails);
     }.bind(this));
@@ -564,7 +564,7 @@ SelectionPage._ontaskSelected = function (selectedTasks) {
 
 document.registerElement('selection-page', {prototype: SelectionPage});
 
-},{"../../events":14,"./../../services/emitr":15,"./../../services/jiraService":16,"./../../services/templateService":17,"./../board-selection-panel/board-selection-panel.js":4,"./../sprint-selection-panel/sprint-selection-panel.js":11,"./../task-selection-panel/task-selection-panel.js":12}],11:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":15,"./../../services/jiraAdapter":16,"./../../services/templateService":17,"./../board-selection-panel/board-selection-panel.js":4,"./../sprint-selection-panel/sprint-selection-panel.js":11,"./../task-selection-panel/task-selection-panel.js":12}],11:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -775,7 +775,6 @@ TaskSelectionRow.setData = function (data) {
 	this._taskStatus.textContent = data.fields.status.name;
 
 	var colorName = data.fields.status.statusCategory.colorName;
-	debugger;
 	
 	this._taskStatus.style.background = colorName;
 	this.key = data.key;
@@ -860,68 +859,60 @@ module.exports = function (target) {
 }
 
 },{}],16:[function(require,module,exports){
-var JiraService = function() {
-	this.username = "";
-	this.password = "";
-	this.url = null;
+var JiraAdapater = function() {
+	this._username = null;
+	this._password = null;
+	this._url = null;
+
     this.sprints = null;
+    this._epics = null;
+    this._tasks = null;
 };
 
-JiraService.prototype.setAuthenticationDetails = function (params) {
-    this.url = params.url;
-    this.username = params.username;
-    this.password = params.password;
+JiraAdapater.prototype.setAuthenticationDetails = function (params) {
+    this._url = params.url;
+    this._username = params.username;
+    this._password = params.password;
 };
 
-JiraService.prototype.getBoards = function () {
+JiraAdapater.prototype.getBoards = function () {
     var self = this;
-    return new Promise(function(resolve, reject) {
-        var xhr = new XMLHttpRequest();
 
-        xhr.open("GET", "https://cors-anywhere.herokuapp.com/" + self.url + "/rest/greenhopper/1.0/rapidviews/viewsData.json");
-        xhr.setRequestHeader("Authorization", "Basic " + btoa(self.username + ":" + self.password));
+    return new Promise (function (resolve, reject) {
+        var url = "https://cors-anywhere.herokuapp.com/" + self._url + "/rest/greenhopper/1.0/rapidviews/viewsData.json";
 
-        xhr.onreadystatechange = function(response) {
-            if (xhr.readyState == 4) {
-                if (xhr.status === 200) {
-                    resolve(JSON.parse(xhr.responseText).views);
-                } else {
-                    reject(xhr.status);
-                }
-            }
+        var onSucess = function (response) {
+            resolve(response.views);
         };
 
-        xhr.setRequestHeader("x-requested-with", "love");
-        xhr.send();
+        var onError = function (response) {
+            reject();
+        };
+
+        self._getData({url: url, requestType: "GET"}).then(onSucess, onError);
     });
 };
 
-JiraService.prototype.getSprints = function (rapidviewId) {
+JiraAdapater.prototype.getSprints = function (rapidviewId) {
+    var self = this;
+
     return new Promise(function(resolve, reject) {
-        var xhr = new XMLHttpRequest();
-        var response = null;
+        var url = "https://cors-anywhere.herokuapp.com/" + self._url + "/rest/greenhopper/1.0/xboard/plan/backlog/data.json?rapidViewId=" + rapidviewId;
 
-        xhr.open("GET", "https://cors-anywhere.herokuapp.com/" + this.url + "/rest/greenhopper/1.0/xboard/plan/backlog/data.json?rapidViewId=" + rapidviewId);
-        xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
+        var onSucess = function (response) {
+            self.sprints = response.sprints;
+            resolve(response);            
+        };
 
-        xhr.onreadystatechange = function(response) {
-            if (xhr.readyState == 4) {
-                if (xhr.status === 200) {
-                    response = JSON.parse(xhr.responseText);
-                    this.sprints = response.sprints;
-                    resolve(response);
-                } else {
-                    reject();
-                }
-            }
-        }.bind(this);
+        var onError = function (response) {
+            reject(response);
+        };
 
-        xhr.setRequestHeader("x-requested-with", "love");
-        xhr.send();
-    }.bind(this));
+        self._getData({url: url, requestType: "GET"}).then(onSucess, onError);
+    });
 };
 
-JiraService.prototype.getTasksIds = function (sprintId) {
+JiraAdapater.prototype.getTasksIds = function (sprintId) {
     for (var i = 0, len = this.sprints.length ; i < len ; i++) {
         if (this.sprints[i].id == sprintId) {
             return this.sprints[i].issuesIds;
@@ -929,7 +920,7 @@ JiraService.prototype.getTasksIds = function (sprintId) {
     }
 };
 
-JiraService.prototype._jiraIdToString = function (jiraIds) {
+JiraAdapater.prototype._jiraIdToString = function (jiraIds) {
     var retunValue = "";
 
     for (var i = 0, len = jiraIds.length ; i < len ; i++) {
@@ -941,17 +932,35 @@ JiraService.prototype._jiraIdToString = function (jiraIds) {
     return retunValue;
 };
 
-JiraService.prototype.getTasksDetails = function (tasksId) {
+JiraAdapater.prototype.getTasksDetails = function (tasksId) {
+    var self = this;
+
     return new Promise(function(resolve, reject) {
+        var url = "https://cors-anywhere.herokuapp.com/" + self._url + "/rest/api/latest/search?jql=" + self._jiraIdToString(tasksId) + "&maxResults=1000";
+
+        var onSucess = function (response) {
+            resolve(response.issues);            
+        };
+
+        var onError = function (response) {
+            reject(response);
+        };
+
+        self._getData({url: url, requestType: "GET"}).then(onSucess, onError);
+    });
+};
+
+JiraAdapater.prototype._getData = function (params) {
+        return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest();
 
-        xhr.open("GET", "https://cors-anywhere.herokuapp.com/" + this.url + "/rest/api/latest/search?jql=" + this._jiraIdToString(tasksId) + "&maxResults=1000");
-        xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
+        xhr.open(params.requestType, params.url);
+        xhr.setRequestHeader("Authorization", "Basic " + btoa(this._username + ":" + this._password));
 
         xhr.onreadystatechange = function(response) {
             if (xhr.readyState == 4) {
                 if (xhr.status === 200) {
-                    resolve(JSON.parse(xhr.responseText).issues);
+                    resolve(JSON.parse(xhr.responseText));
                 } else {
                     reject();
                 }
@@ -963,7 +972,7 @@ JiraService.prototype.getTasksDetails = function (tasksId) {
     }.bind(this));
 };
 
-module.exports = JiraService;
+module.exports = JiraAdapater;
 },{}],17:[function(require,module,exports){
 var templateService = {};
 

@@ -4,7 +4,7 @@ var Emitr = require("./../../services/emitr");
 
 var templateService = require("./../../services/templateService");
 var SelectionPage = Object.create(HTMLElement.prototype);
-var JiraService = require("./../../services/jiraService");
+var JiraAdapter = require("./../../services/jiraAdapter");
 
 var EVENTS = require("../../events");
 
@@ -18,7 +18,7 @@ SelectionPage.createdCallback = function() {
 	this.authenticationPanel = null;
 	this.loadingScreen = null;
     this._sprintConfig = null;
-	this.jiraService = new JiraService();
+	this.jiraAdapter = new JiraAdapter();
     this._layoutConfig = {
         color: {
             label: "Color",
@@ -78,7 +78,7 @@ SelectionPage.attachedCallback = function() {
 };
 
 SelectionPage._onAuthenticationSubmitted = function(parameters) {
-    this.jiraService.setAuthenticationDetails(parameters);
+    this.jiraAdapter.setAuthenticationDetails(parameters);
 	this.loadingScreen.show("loading in progress");
 
     var self = this;
@@ -94,12 +94,12 @@ SelectionPage._onAuthenticationSubmitted = function(parameters) {
         }
     };
 
-    this.jiraService.getBoards().then(callBacks.success, callBacks.error);
+    this.jiraAdapter.getBoards().then(callBacks.success, callBacks.error);
 };
 
 SelectionPage._onBoardSelected = function (boardId) {
 	this.loadingScreen.show("loading in progress");
-    this.jiraService.getSprints(boardId).then(function(sprintsConfig) {
+    this.jiraAdapter.getSprints(boardId).then(function(sprintsConfig) {
         this._sprintConfig = sprintsConfig;
     	this.sprintSelectionPanel.setSprints(sprintsConfig.sprints);
     	this.loadingScreen.hide();
@@ -116,8 +116,8 @@ SelectionPage.hide = function () {
 
 SelectionPage._onSprintSelected = function (sprintId) {
     this.loadingScreen.show("loading in progress");
-    var ticketsId = this.jiraService.getTasksIds(sprintId);
-    this.jiraService.getTasksDetails(ticketsId).then(function(tasksDetails) {
+    var ticketsId = this.jiraAdapter.getTasksIds(sprintId);
+    this.jiraAdapter.getTasksDetails(ticketsId).then(function(tasksDetails) {
         this.loadingScreen.hide();
         this.taskSelectionPanel.setTickets(tasksDetails);
     }.bind(this));

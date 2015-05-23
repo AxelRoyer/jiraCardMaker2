@@ -72,7 +72,6 @@ TaskSelectionRow.setData = function (data) {
 	this._taskStatus.textContent = data.fields.status.name;
 
 	var colorName = data.fields.status.statusCategory.colorName;
-	debugger;
 	
 	this._taskStatus.style.background = colorName;
 	this.key = data.key;
