@@ -1,13 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
-var JiraApiHandler = require("./services/JiraApiHandler");
-var templateService = require("./services/templateService");
-
-require("./../lib/webcomponents-lite.min.js");
-
-var EVENTS = require("./events.js");
-
 require("./components/authentication-panel/authentication-panel.js");
 require("./components/selection-page/selection-page.js");
 require("./components/print-page/print-page.js");
@@ -15,31 +8,36 @@ require("./components/card/card.js");
 require("./components/layout-panel/layout-panel.js");
 require("./components/layout-options/layout-options.js");
 require("./components/loading-screen/loading-screen.js");
+require("./../lib/webcomponents-lite.min.js");
+
+var EVENTS = require("./events.js");
+var templateService = require("./services/templateService");
 
 var JiraCardMakerApp = Object.create(HTMLElement.prototype);
 
 JiraCardMakerApp.createdCallback = function () {
-	window.location.hash = "request";
-	this.selectionPage = null;
+	this._selectionPage = null;
+	this._printPage = null;
 };
 
 JiraCardMakerApp.attachedCallback = function () {
 	this.template = document.importNode(templateService.getTemplate("app"), true);
     this.appendChild(this.template);
 
-	this.selectionPage = this.querySelector("selection-page");
-	this.selectionPage.on(EVENTS.TASK_PANEL.TASKS_SELECTED, this._onTasksSelected.bind(this), false);
-	this.printPage = this.querySelector("selection-print-page");
+	this._selectionPage = this.querySelector("selection-page");
+	this._printPage = this.querySelector("selection-print-page");
+
+	this._selectionPage.on(EVENTS.TASK_PANEL.TASKS_SELECTED, this._onTasksSelected, this);
 };
 
 JiraCardMakerApp._onTasksSelected = function (params) {
-	this.selectionPage.hide();
-	this.printPage.show(params);
+	this._selectionPage.hide();
+	this._printPage.show(params);
 };
 
 document.registerElement('jcm-app', {prototype: JiraCardMakerApp});
 
-},{"./../lib/webcomponents-lite.min.js":2,"./components/authentication-panel/authentication-panel.js":3,"./components/card/card.js":5,"./components/layout-options/layout-options.js":6,"./components/layout-panel/layout-panel.js":7,"./components/loading-screen/loading-screen.js":8,"./components/print-page/print-page.js":9,"./components/selection-page/selection-page.js":10,"./events.js":14,"./services/JiraApiHandler":15,"./services/templateService":18}],2:[function(require,module,exports){
+},{"./../lib/webcomponents-lite.min.js":2,"./components/authentication-panel/authentication-panel.js":3,"./components/card/card.js":5,"./components/layout-options/layout-options.js":6,"./components/layout-panel/layout-panel.js":7,"./components/loading-screen/loading-screen.js":8,"./components/print-page/print-page.js":9,"./components/selection-page/selection-page.js":10,"./events.js":14,"./services/templateService":17}],2:[function(require,module,exports){
 /**
  * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
@@ -92,7 +90,7 @@ AuthenticationPanel.onButtonClicked = function () {
 document.registerElement('jcm-authentication-panel', {prototype: AuthenticationPanel});
 
 module.exports = AuthenticationPanel;
-},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],4:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":15,"./../../services/templateService":17}],4:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -136,7 +134,7 @@ BoardSelectionPanel._createOption = function (label, value) {
 
 document.registerElement('jcm-board-selection-panel', {prototype: BoardSelectionPanel});
 
-},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],5:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":15,"./../../services/templateService":17}],5:[function(require,module,exports){
 "use strict";
 
 var templateService = require("./../../services/templateService");
@@ -238,7 +236,7 @@ Card._updateUI = function () {
 
 document.registerElement('jcm-card', {prototype: Card});
 
-},{"./../../services/templateService":18}],6:[function(require,module,exports){
+},{"./../../services/templateService":17}],6:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -289,7 +287,7 @@ LayoutOptions._onValueChanged = function (input) {
 
 document.registerElement('layout-options', {prototype: LayoutOptions});
 
-},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],7:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":15,"./../../services/templateService":17}],7:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -379,7 +377,7 @@ LayoutPanel._onLayoutOptionsChanged = function (config) {
 
 document.registerElement('jcm-layout-panel', {prototype: LayoutPanel});
 
-},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],8:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":15,"./../../services/templateService":17}],8:[function(require,module,exports){
 "use strict";
 
 var LoadingScreen = Object.create(HTMLElement.prototype);
@@ -404,7 +402,7 @@ LoadingScreen.hide = function() {
 
 document.registerElement('loading-screen', {prototype: LoadingScreen});
 
-},{"./../../services/templateService":18}],9:[function(require,module,exports){
+},{"./../../services/templateService":17}],9:[function(require,module,exports){
 "use strict";
 
 var PrintPage = Object.create(HTMLElement.prototype);
@@ -566,7 +564,7 @@ SelectionPage._ontaskSelected = function (selectedTasks) {
 
 document.registerElement('selection-page', {prototype: SelectionPage});
 
-},{"../../events":14,"./../../services/emitr":16,"./../../services/jiraService":17,"./../../services/templateService":18,"./../board-selection-panel/board-selection-panel.js":4,"./../sprint-selection-panel/sprint-selection-panel.js":11,"./../task-selection-panel/task-selection-panel.js":12}],11:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":15,"./../../services/jiraService":16,"./../../services/templateService":17,"./../board-selection-panel/board-selection-panel.js":4,"./../sprint-selection-panel/sprint-selection-panel.js":11,"./../task-selection-panel/task-selection-panel.js":12}],11:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -616,7 +614,7 @@ SprintSelectionPanel._createOption = function (params) {
 
 document.registerElement('jcm-sprint-selection-panel', {prototype: SprintSelectionPanel});
 
-},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],12:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":15,"./../../services/templateService":17}],12:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -702,7 +700,7 @@ TaskSelectionPanel._createTaskItem = function (taskParams) {
 
 document.registerElement('jcm-task-selection-panel', {prototype: TaskSelectionPanel});
 
-},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18,"./../task-selection-row/task-selection-row.js":13}],13:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":15,"./../../services/templateService":17,"./../task-selection-row/task-selection-row.js":13}],13:[function(require,module,exports){
 "use strict";
 
 var Emitr = require("./../../services/emitr");
@@ -795,7 +793,7 @@ TaskSelectionRow.setData = function (data) {
 
 document.registerElement('task-selection-row', {prototype: TaskSelectionRow});
 
-},{"../../events":14,"./../../services/emitr":16,"./../../services/templateService":18}],14:[function(require,module,exports){
+},{"../../events":14,"./../../services/emitr":15,"./../../services/templateService":17}],14:[function(require,module,exports){
 module.exports = {
 	"AUTHENTICATION_PANEL": {
 		"AUTHENTICATION_SUBMITTED": "authentication-subitted"
@@ -814,197 +812,6 @@ module.exports = {
 	}
 };
 },{}],15:[function(require,module,exports){
-var JiraApiHandler = function(jiraUrl, listener) {
-    var username = document.getElementById("username").value;
-    var password = document.getElementById("password").value;
-    this.jiraApi = new JiraApi(jiraUrl, true, username, password);
-	this.baseUrl = jiraUrl;
-	this.listener = listener;
-	this.jiraMap = {};
-
-	this.requested = false;
-	this.expectedCallbacks = 0;
-	this.callbacksReceived = 0;
-};
-
-// Interface method - requestIssues passing in an array of issue ids.
-JiraApiHandler.prototype.requestIssues = function(issueIds, callback) {
-    //TODO: This will break if invoked twice quickly.
-	if (!this.requested) {
-        this.requestIssuesCallback = callback;
-		this.requested = true;
-		this.requestJiras(issueIds);
-		this.chosenIssues = issueIds;
-	} else {
-		throw new Error("You can only request issues once.");
-	}
-};
-
-JiraApiHandler.prototype.requestJiras = function(jiraIds) {
-    jiraIds = _.uniq(jiraIds);
-	this.expectedCallbacks = jiraIds.length;
-	this.callbacksReceived = 0;
-	this.requestJirasWithSQL(jiraIds, this.processCardsData.bind(this));
-};
-
-JiraApiHandler.getJirasRequestQuery = function(jiraIds) {
-	if (jiraIds == null) return null;
-	return jiraIds.map(λ("'key='+_")).join("+or+");
-}
-
-
-JiraApiHandler.prototype.isParentLoaded = function (card) {
-	if (card.parentIssueId) {
-		return this.jiraMap[card.parentIssueId] != null;
-	} else {
-		return true;
-	}
-};
-
-JiraApiHandler.prototype.parentsNotLoaded = function () {
-	var parentsNotLoaded = [];
-	for (var index in this.jiraMap) {
-		var card = this.jiraMap[index];
-        if (!this.isParentLoaded(card)) {
-            parentsNotLoaded.push(card.parentIssueId);
-        }
-        for (var i=0; i < card.subtasks.length; i++) {
-            var subtaskId = card.subtasks[i];
-            if (this.jiraMap[subtaskId] == null) {
-                parentsNotLoaded.push(subtaskId);
-                this.chosenIssues.push(subtaskId);
-            }
-        }
-	}
-	return parentsNotLoaded
-};
-
-JiraApiHandler.prototype.processCardsData = function(jiraData) {
-	jiraData.issues.forEach(function(issue) {
-		this.processCardData(issue);
-	}.bind(this));
-};
-
-JiraApiHandler.prototype.processCardData = function(jiraData) {
-this.callbacksReceived++;
-	this.jiraMap[jiraData.key] = this.createCard(jiraData);
-	if (this.callbacksReceived == this.expectedCallbacks) {
-		this.renderCardsIfReady();
-	}
-};
-
-JiraApiHandler.prototype.processJiraData = function(jiraData) {
-	this.processCardData(jiraData);
-};
-
-JiraApiHandler.prototype.createCard = function (jira) {
-	var componentString = "";
-	var components = jira.fields.components;
-	if (components.length != 0) {
-		var componentsString = "";
-		for (var id in components) {
-			componentsString += components[id].name + ",";
-		}
-		componentString = componentsString.substring(0, componentsString.length - 1) + ":";
-	}
-	var card = new Card(jira.key,
-		this.baseUrl + "/browse/" + jira.key,
-		jira.fields.issuetype.name,
-		jira.fields["customfield_10243"],
-		jira.fields.summary,
-		componentString,
-		jira.fields["customfield_10151"],
-        jira.fields["customfield_10261"],
-        jira.fields["customfield_10870"],
-		jira.fields.parent ? jira.fields.parent.key : null,
-        jira.fields.subtasks.map(function(_) {return _.key})
-	);
-	return card;
-};
-
-JiraApiHandler.prototype.renderCardsIfReady = function () {
-	var parentsNotLoaded = this.parentsNotLoaded();
-		this.requestJiras(parentsNotLoaded);
-	if (parentsNotLoaded.length !== 0) {
-	} else {
-        this.requestIssuesCallback(this.chosenIssues, this.jiraMap);
-	}
-};
-
-JiraApiHandler.prototype.getRapidBoardSprint = function(viewId, sprintId, callback) {
-    this.jiraApi.getGreenhopperSprint(callback, viewId, sprintId);
-}
-
-JiraApiHandler.prototype.requestRapidSprints = function(sprintId, callback) {
-	//https://jira.caplin.com/rest/greenhopper/latest/sprints/11
-	jiraUrl = this.baseUrl + "/rest/greenhopper/latest/sprints/" + sprintId;
-
-	if (document.getElementById('jiraOnDemand').checked) {
-		//CJB. Modified to work around recent bug in RapidBoard API
-		//https://github.com/Shikaga/JiraAgileCardMaker/issues/20
-		//https://jira.caplin.com/rest/greenhopper/latest/sprintquery/11?includeFutureSprints=true&includeHistoricSprints=false
-		jiraUrl = this.baseUrl + "/rest/greenhopper/latest/sprintquery/" + sprintId + "?includeFutureSprints=true&includeHistoricSprints=false";
-	}
-
-	this.jiraApi.jch.getData(callback, jiraUrl);
-}
-
-JiraApiHandler.prototype.requestRapidViews = function(callback) {
-	//https://jira.caplin.com/rest/greenhopper/latest/rapidviews/list
-	var jiraUrl = this.baseUrl + "/rest/greenhopper/latest/rapidviews/list";
-	this.jiraApi.jch.getData(callback, jiraUrl);
-}
-
-JiraApiHandler.prototype.requestXBoard = function(rapidViewId, callback) {
-	//https://jira.caplin.com/rest/greenhopper/1.0/xboard/plan/backlog/data.json?rapidViewId=43
-	var jiraUrl = this.baseUrl + "/rest/greenhopper/1.0/xboard/plan/backlog/data.json?rapidViewId=" + rapidViewId;
-	this.jiraApi.jch.getData(callback, jiraUrl);
-}
-
-JiraApiHandler.prototype.requestXBoards = function(callback) {
-	//https://jira.caplin.com/rest/greenhopper/1.0/rapidviews/viewsData.json
-	var jiraUrl = this.baseUrl + "/rest/greenhopper/1.0/rapidviews/viewsData.json";
-	this.jiraApi.jch.getData(callback, jiraUrl);
-}
-
-JiraApiHandler.prototype.requestProjects = function(callback) {
-	//https://jira.springsource.org/rest/api/latest/project
-	var jiraUrl = this.baseUrl + "/rest/api/latest/project";
-	this.jiraApi.jch.getData(callback, jiraUrl);
-}
-
-JiraApiHandler.prototype.requestFixVersions = function(project, callback) {
-	//https://jira.springsource.org/rest/api/latest/project/BATCH/versions
-	var jiraUrl = this.baseUrl + "/rest/api/latest/project/" + project + "/versions"
-	this.jiraApi.jch.getData(callback, jiraUrl);
-}
-
-JiraApiHandler.prototype.requestFixVersion = function(project, fixversion, callback) {
-
-    jiraUrl = this.baseUrl + "/rest/api/latest/search?jql=project=" + project + "%20AND%20fixversion=" + fixversion + "&fields=key&maxResults=1000";
-    this.jiraApi.jch.getData(callback, jiraUrl);
-};
-
-JiraApiHandler.prototype.requestJirasWithSQL = function(jiraIds,callback) {
-	if (jiraIds.length == 0) return;
-	var jiraUrl = this.baseUrl + "/rest/api/latest/search?jql=" + JiraApiHandler.getJirasRequestQuery(jiraIds) + "&maxResults=1000";
-	this.jiraApi.jch.getData(callback, jiraUrl);
-};
-
-JiraApiHandler.prototype.getCallbackName = function() {
-	var callbackName = "_jiraProcessData_";
-	while (window[callbackName]) {
-		callbackName += "X";
-	}
-	window[callbackName] = function(jiraData) {
-		this.processJiraData(jiraData);
-		delete window[callbackName];
-	}.bind(this);
-	return callbackName
-}
-
-module.exports = JiraApiHandler;
-},{}],16:[function(require,module,exports){
 "use strict";
 
 module.exports = function (target) {
@@ -1044,7 +851,7 @@ module.exports = function (target) {
     };
 }
 
-},{}],17:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var JiraService = function() {
 	this.username = "";
 	this.password = "";
@@ -1149,7 +956,7 @@ JiraService.prototype.getTasksDetails = function (tasksId) {
 };
 
 module.exports = JiraService;
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var templateService = {};
 
 templateService.getTemplate = function(id) {
