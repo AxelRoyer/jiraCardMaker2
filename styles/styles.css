@@ -143,7 +143,6 @@ task-selection-row {
       width: 5rem;
       text-align: center; }
     task-selection-row > .task-header .task-title {
-      width: calc(100% - 6rem);
       overflow: auto;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -159,6 +158,14 @@ task-selection-row {
       display: none; }
       task-selection-row > .task-header .task-details-button.expanded {
         transform: rotate(-180deg); }
+    task-selection-row > .task-header .task-status {
+      margin: 0.2rem;
+      border-radius: 0.2rem;
+      font-size: 0.5rem;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      line-height: 0.8rem;
+      border: 1px solid black; }
   task-selection-row > .task-details {
     display: none; }
   task-selection-row .task-subtasks {

@@ -19,6 +19,7 @@ TaskSelectionRow.createdCallback = function () {
  	this.taskDescription = this.querySelector(".task-description");
  	this.taskDetailsContainer = this.querySelector(".task-details");
  	this.checkbox = this.querySelector("input[type='checkbox'");
+ 	this._taskStatus = this.querySelector(".task-status");
  	this.checkbox.checked = false;
  	this.areDetailsDisplayed = false;
  	this._isSelected = false;
@@ -67,6 +68,13 @@ TaskSelectionRow.setData = function (data) {
 	this._data = data;
 	this.taskId.textContent = data.key;
 	this.header.textContent = data.fields.summary;
+
+	this._taskStatus.textContent = data.fields.status.name;
+
+	var colorName = data.fields.status.statusCategory.colorName;
+	debugger;
+	
+	this._taskStatus.style.background = colorName;
 	this.key = data.key;
 
  	var subtasks = data.fields.subtasks;

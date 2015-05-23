@@ -26,7 +26,6 @@ task-selection-row {
 		}
 
 		.task-title {
-			width: calc(100% - 6rem);
 			overflow: auto;
   			text-overflow: ellipsis;
   			white-space: nowrap;
@@ -46,6 +45,16 @@ task-selection-row {
 			&.expanded {
 				transform: rotate(-180deg);
 			}
+		}
+
+		.task-status {
+			margin: 0.2rem;
+			border-radius: 0.2rem;
+			font-size: 0.5rem;
+			padding-left: 0.5rem;
+			padding-right: 0.5rem;
+			line-height: 0.8rem;
+			border: 1px solid black;
 		}
 	}
 
