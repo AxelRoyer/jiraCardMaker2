@@ -152,6 +152,7 @@ Card.attachedCallback = function () {
 	var template = document.importNode(templateService.getTemplate("card"), true);
     this.appendChild(template);
 
+    this._taskContainer = this.querySelector(".task-container");
     this._taskIdContainer = this.querySelector(".task-id");
     this._taskProjectContainer = this.querySelector(".task-project-id");
 
@@ -194,6 +195,11 @@ Card._updateUI = function () {
 	if (this._cardLayoutConfig && this._data) {
 
 	    this._taskIdContainer.textContent = this._data.key.split("-")[1];
+
+	    if (this._data.fields.issuetype) {
+	    	this._taskContainer.classList.add(this._data.fields.issuetype.name.replace(" ", ""));
+	    }
+
 	    this._taskProjectContainer.textContent = this._data.key.split("-")[0];
 
 	    if (this._data.parent) {
