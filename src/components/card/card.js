@@ -72,6 +72,7 @@ Card._updateUI = function () {
 		    this._parentProjectContainer.style.visibility = this._cardLayoutConfig.parent.checked === true ? "visible" : "hidden";;
 	    }		    
 
+	    debugger;
 		// epicConfig = this._getEpicConfig(this._data.fields.customfield_10870);
 		// if (epicConfig) {
 	 //    	this._epicContainer.textContent = epicConfig.epicLabel;
