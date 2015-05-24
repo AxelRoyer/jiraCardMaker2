@@ -14,11 +14,21 @@ var AppConfig = {
             issuetype: {
             	name: "Bug",
             	color: "red"
-            }
+            },
+            customfield_10870: "FXM-1000"
         }
 	},
+    LAYOUT_EXAMPLE_EPIC_DATA: {
+        epics: [
+            {
+                key: "FXM-1000",
+                epicLabel: "Technical debt",
+                epicColor: "yellow"
+            }
+        ]
+    },
 	LAYOUT_CONFIG: {
-        keys: ["color", "qrcode", "parent", "component", "epic", "priority", "version", "estimate"],
+        keys: ["color", "qrcode", "parent", "epic", "priority", "estimate"],
         parameters: {
             color: {
                 label: "Color",
@@ -32,10 +42,6 @@ var AppConfig = {
                 label: "Parent",
                 checked: true
             },
-            component: {
-                label: "Component",
-                checked: false
-            },
             epic: {
                 label: "Epic",
                 checked: true
@@ -43,10 +49,6 @@ var AppConfig = {
             priority: {
                 label: "Priority",
                 checked: true
-            },
-            version: {
-                label: "Version",
-                checked: false
             },
             estimate: {
                 label: "Estimate task point",

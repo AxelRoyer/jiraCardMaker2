@@ -44,7 +44,7 @@ SelectionPage.attachedCallback = function() {
     this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASKS_SELECTED, this._ontaskSelected, this);
 
     this.layoutPanel = this.querySelector("jcm-layout-panel");
-    this.layoutPanel.init(new Task(AppConfig.LAYOUT_EXAMPLE_TASK_DATA), AppConfig.LAYOUT_CONFIG);
+    this.layoutPanel.init(new Task(AppConfig.LAYOUT_EXAMPLE_TASK_DATA, AppConfig.LAYOUT_EXAMPLE_EPIC_DATA), AppConfig.LAYOUT_CONFIG);
     this.layoutPanel.on(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._onLayoutOptionsChanged, this);
 };
 

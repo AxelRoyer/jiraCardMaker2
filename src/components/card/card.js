@@ -7,6 +7,17 @@ Card.createdCallback = function () {
 	this._data = null;
 	this._cardLayoutConfig = null;
 	this._priority = null;
+
+	this._taskContainer = null;
+	this._taskIdContainer = null;
+    this._taskProjectContainer = null;
+    this._parentIdContainer = 
+    this._parentProjectContainer = null;
+    this._estimateContainer = null;
+    this._qrcodeContainer = null;
+    this._epicContainer = null;
+    this._summaryContainer = null;
+    this._priorityContainer = null;
 };
 
 Card.attachedCallback = function () {
@@ -36,20 +47,17 @@ Card.updateConfig = function (layoutConfig) {
 	this._updateUI();
 };
 
-Card._getEpicConfig = function (epicId) {
-	if (!epicId) {
-		return false;
-	}
-
-};
-
 Card._updateUI = function () {
 	if (this._cardLayoutConfig && this._data) {
 		var key = this._data.getKey();
 	    this._taskIdContainer.textContent = key.id;
 	    this._taskProjectContainer.textContent = key.project;
 
-	    this._taskContainer.classList.add(this._data.getType());
+	    if (this._cardLayoutConfig.color.checked) {
+	    	this._taskContainer.classList.add(this._data.getType());
+	    } else {
+	    	this._taskContainer.classList.remove(this._data.getType());
+	    }
 
 	    var priority = this._data.getPriority();
 	    this._priorityContainer.classList.add("priority" + priority.id);

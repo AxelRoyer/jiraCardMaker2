@@ -34,7 +34,7 @@ LayoutPanel.init = function (cardData, cardLayoutOptions) {
 
 LayoutPanel._onLayoutOptionsChanged = function (config) {
     this._cardLayoutOptions = config;
-    this._cardExample.updateConfig(this._cardLayoutOptions.parameters);
+    this._cardExample.updateConfig(this._cardLayoutOptions);
     this.trigger(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._cardLayoutOptions);
 };
 

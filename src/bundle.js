@@ -66,11 +66,21 @@ var AppConfig = {
             issuetype: {
             	name: "Bug",
             	color: "red"
-            }
+            },
+            customfield_10870: "FXM-1000"
         }
 	},
+    LAYOUT_EXAMPLE_EPIC_DATA: {
+        epics: [
+            {
+                key: "FXM-1000",
+                epicLabel: "Technical debt",
+                epicColor: "yellow"
+            }
+        ]
+    },
 	LAYOUT_CONFIG: {
-        keys: ["color", "qrcode", "parent", "component", "epic", "priority", "version", "estimate"],
+        keys: ["color", "qrcode", "parent", "epic", "priority", "estimate"],
         parameters: {
             color: {
                 label: "Color",
@@ -84,10 +94,6 @@ var AppConfig = {
                 label: "Parent",
                 checked: true
             },
-            component: {
-                label: "Component",
-                checked: false
-            },
             epic: {
                 label: "Epic",
                 checked: true
@@ -95,10 +101,6 @@ var AppConfig = {
             priority: {
                 label: "Priority",
                 checked: true
-            },
-            version: {
-                label: "Version",
-                checked: false
             },
             estimate: {
                 label: "Estimate task point",
@@ -204,6 +206,17 @@ Card.createdCallback = function () {
 	this._data = null;
 	this._cardLayoutConfig = null;
 	this._priority = null;
+
+	this._taskContainer = null;
+	this._taskIdContainer = null;
+    this._taskProjectContainer = null;
+    this._parentIdContainer = 
+    this._parentProjectContainer = null;
+    this._estimateContainer = null;
+    this._qrcodeContainer = null;
+    this._epicContainer = null;
+    this._summaryContainer = null;
+    this._priorityContainer = null;
 };
 
 Card.attachedCallback = function () {
@@ -233,20 +246,17 @@ Card.updateConfig = function (layoutConfig) {
 	this._updateUI();
 };
 
-Card._getEpicConfig = function (epicId) {
-	if (!epicId) {
-		return false;
-	}
-
-};
-
 Card._updateUI = function () {
 	if (this._cardLayoutConfig && this._data) {
 		var key = this._data.getKey();
 	    this._taskIdContainer.textContent = key.id;
 	    this._taskProjectContainer.textContent = key.project;
 
-	    this._taskContainer.classList.add(this._data.getType());
+	    if (this._cardLayoutConfig.color.checked) {
+	    	this._taskContainer.classList.add(this._data.getType());
+	    } else {
+	    	this._taskContainer.classList.remove(this._data.getType());
+	    }
 
 	    var priority = this._data.getPriority();
 	    this._priorityContainer.classList.add("priority" + priority.id);
@@ -369,7 +379,7 @@ LayoutPanel.init = function (cardData, cardLayoutOptions) {
 
 LayoutPanel._onLayoutOptionsChanged = function (config) {
     this._cardLayoutOptions = config;
-    this._cardExample.updateConfig(this._cardLayoutOptions.parameters);
+    this._cardExample.updateConfig(this._cardLayoutOptions);
     this.trigger(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._cardLayoutOptions);
 };
 
@@ -471,7 +481,7 @@ SelectionPage.attachedCallback = function() {
     this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASKS_SELECTED, this._ontaskSelected, this);
 
     this.layoutPanel = this.querySelector("jcm-layout-panel");
-    this.layoutPanel.init(new Task(AppConfig.LAYOUT_EXAMPLE_TASK_DATA), AppConfig.LAYOUT_CONFIG);
+    this.layoutPanel.init(new Task(AppConfig.LAYOUT_EXAMPLE_TASK_DATA, AppConfig.LAYOUT_EXAMPLE_EPIC_DATA), AppConfig.LAYOUT_CONFIG);
     this.layoutPanel.on(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._onLayoutOptionsChanged, this);
 };
 
