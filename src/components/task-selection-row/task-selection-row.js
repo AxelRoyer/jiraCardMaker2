@@ -42,7 +42,7 @@ TaskSelectionRow._onDetailsButtonClicked = function () {
 TaskSelectionRow.toggleCheckedValue = function (value, broadcast) {
 	this.checkbox.checked = value;
 	var event = EVENTS.TASK_PANEL.TASKS_SELECTED +"_" + this._level;
-	this.trigger(event, {key: this._data.key, data: this._data, selected: value});
+	this.trigger(event, {key: this._data.getKey().key, data: this._data, selected: value});
 
 	for (var i = 0, len = this._subtasks.length ; i < len ;i++) {
 		this._subtasks[i].toggleCheckedValue(value, broadcast);
@@ -61,30 +61,26 @@ TaskSelectionRow.isSelected = function () {
 	return false;
 };
 
-TaskSelectionRow.setData = function (data) {
+TaskSelectionRow.setData = function (taskData) {
+	this._data = taskData;
 	this._level = parseInt(this.dataset.level);
 	var nextLevel = this._level + 1;
-
-	this._data = data;
-	this.taskId.textContent = data.key;
-	this.header.textContent = data.fields.summary;
-
-	this._taskStatus.textContent = data.fields.status.name;
-
-	var colorName = data.fields.status.statusCategory.colorName;
-	
-	this._taskStatus.style.background = colorName;
-	this.key = data.key;
-
- 	var subtasks = data.fields.subtasks;
  	var subtaskItem = null;
 
- 	if (subtasks && subtasks.length !== 0) {
+	this.taskId.textContent = taskData.getKey().key;
+	this.header.textContent = taskData.getDescription();
+	
+	this._taskStatus.textContent = taskData.getStatus().name;
+	this._taskStatus.style.background = taskData.getStatus().color;
+
+ 	var subtasks = taskData.getSubTasks();
+
+ 	if (subtasks.length !== 0) {
  		this.detailsButton.style.display = "block";
 
  		for (var i = 0, len = subtasks.length ; i < len ; i++) {
  			var data = subtasks[i];
- 			data.parent = this.key;
+ 			data.setParent(taskData.getKey().key);
  			subtaskItem = document.createElement("task-selection-row");
  			subtaskItem.dataset.level = nextLevel;
  			 this._subtasks.push(subtaskItem);

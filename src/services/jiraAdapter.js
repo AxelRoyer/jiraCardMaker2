@@ -1,3 +1,5 @@
+var Task = require("./task");
+
 var JiraAdapater = function() {
 	this._username = null;
 	this._password = null;
@@ -39,7 +41,8 @@ JiraAdapater.prototype.getSprints = function (rapidviewId) {
         var url = "https://cors-anywhere.herokuapp.com/" + self._url + "/rest/greenhopper/1.0/xboard/plan/backlog/data.json?rapidViewId=" + rapidviewId;
 
         var onSucess = function (response) {
-            self.sprints = response.sprints;
+            self._epics = response.epicData;
+            self._sprints = response.sprints;
             resolve(response);            
         };
 
@@ -51,7 +54,37 @@ JiraAdapater.prototype.getSprints = function (rapidviewId) {
     });
 };
 
-JiraAdapater.prototype.getTasksIds = function (sprintId) {
+JiraAdapater.prototype.getTasksDetails = function (sprintId) {
+    var tasksId = this._getTasksIds(sprintId);
+    var self = this;
+
+    return new Promise(function(resolve, reject) {
+        var url = "https://cors-anywhere.herokuapp.com/" + self._url + "/rest/api/latest/search?jql=" + self._jiraIdToString(tasksId) + "&maxResults=1000";
+
+        var onSucess = function (response) {
+            resolve(self._computeTasks(response.issues));            
+        };
+
+        var onError = function (response) {
+            reject(response);
+        };
+
+        self._getData({url: url, requestType: "GET"}).then(onSucess, onError);
+    });
+};
+
+/*********** Private methods **************/
+
+JiraAdapater.prototype._computeTasks = function (tasksToCompute) {
+    var tasks = [];
+
+    for (var i = 0, len = tasksToCompute.length ; i < len ; i++) {
+        tasks.push(new Task(tasksToCompute[i], this._epics));
+    }
+    return tasks;
+};
+
+JiraAdapater.prototype._getTasksIds = function (sprintId) {
     for (var i = 0, len = this._sprints.length ; i < len ; i++) {
         if (this._sprints[i].id == sprintId) {
             return this._sprints[i].issuesIds;
@@ -69,24 +102,6 @@ JiraAdapater.prototype._jiraIdToString = function (jiraIds) {
         retunValue = retunValue + "issue=" + jiraIds[i];
     }
     return retunValue;
-};
-
-JiraAdapater.prototype.getTasksDetails = function (tasksId) {
-    var self = this;
-
-    return new Promise(function(resolve, reject) {
-        var url = "https://cors-anywhere.herokuapp.com/" + self._url + "/rest/api/latest/search?jql=" + self._jiraIdToString(tasksId) + "&maxResults=1000";
-
-        var onSucess = function (response) {
-            resolve(response.issues);            
-        };
-
-        var onError = function (response) {
-            reject(response);
-        };
-
-        self._getData({url: url, requestType: "GET"}).then(onSucess, onError);
-    });
 };
 
 JiraAdapater.prototype._getData = function (params) {

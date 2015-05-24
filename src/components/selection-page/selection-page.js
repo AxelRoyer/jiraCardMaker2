@@ -6,11 +6,14 @@ var templateService = require("./../../services/templateService");
 var SelectionPage = Object.create(HTMLElement.prototype);
 var JiraAdapter = require("./../../services/jiraAdapter");
 
-var EVENTS = require("../../events");
+var EVENTS = require("./../../events");
+var AppConfig = require("./../../appConfig.js");
+var Task = require("./../../services/task");
 
 require("./../sprint-selection-panel/sprint-selection-panel.js");
 require("./../board-selection-panel/board-selection-panel.js");
 require("./../task-selection-panel/task-selection-panel.js");
+
 
 Emitr(SelectionPage);
 
@@ -18,46 +21,15 @@ SelectionPage.createdCallback = function() {
 	this.authenticationPanel = null;
 	this.loadingScreen = null;
     this._sprintConfig = null;
+    this._layoutConfig = AppConfig.LAYOUT_CONFIG.parameters;
 	this.jiraAdapter = new JiraAdapter();
-    this._layoutConfig = {
-        color: {
-            label: "Color",
-            checked: true
-        },
-        qrcode: {
-            label: "QR Code",
-            checked: true
-        },
-        parent: {
-            label: "Parent",
-            checked: true
-        },
-        component: {
-            label: "Component",
-            checked: false
-        },
-        epic: {
-            label: "Epic",
-            checked: true
-        },
-        priority: {
-            label: "Priority",
-            checked: true
-        },
-        version: {
-            label: "Version",
-            checked: false
-        },
-        estimate: {
-            label: "Estimate task point",
-            checked: true
-        }
-    };
 };
 
 SelectionPage.attachedCallback = function() {
 	var template = document.importNode(templateService.getTemplate("selection-page"), true);
     this.appendChild(template);
+
+    this.loadingScreen = this.querySelector("loading-screen");
 
     this.authenticationPanel = this.querySelector("jcm-authentication-panel");
     this.authenticationPanel.on(EVENTS.AUTHENTICATION_PANEL.AUTHENTICATION_SUBMITTED, this._onAuthenticationSubmitted, this);
@@ -72,9 +44,8 @@ SelectionPage.attachedCallback = function() {
     this.taskSelectionPanel.on(EVENTS.TASK_PANEL.TASKS_SELECTED, this._ontaskSelected, this);
 
     this.layoutPanel = this.querySelector("jcm-layout-panel");
+    this.layoutPanel.init(new Task(AppConfig.LAYOUT_EXAMPLE_TASK_DATA), AppConfig.LAYOUT_CONFIG);
     this.layoutPanel.on(EVENTS.LAYOUT_OPTIONS.LAYOUT_OPTIONS_CHANGED, this._onLayoutOptionsChanged, this);
-
-    this.loadingScreen = this.querySelector("loading-screen");
 };
 
 SelectionPage._onAuthenticationSubmitted = function(parameters) {
@@ -116,8 +87,7 @@ SelectionPage.hide = function () {
 
 SelectionPage._onSprintSelected = function (sprintId) {
     this.loadingScreen.show("loading in progress");
-    var ticketsId = this.jiraAdapter.getTasksIds(sprintId);
-    this.jiraAdapter.getTasksDetails(ticketsId).then(function(tasksDetails) {
+    this.jiraAdapter.getTasksDetails(sprintId).then(function(tasksDetails) {
         this.loadingScreen.hide();
         this.taskSelectionPanel.setTickets(tasksDetails);
     }.bind(this));
@@ -126,10 +96,7 @@ SelectionPage._onSprintSelected = function (sprintId) {
 SelectionPage._ontaskSelected = function (selectedTasks) {
     this.trigger(EVENTS.TASK_PANEL.TASKS_SELECTED, {
         tasks: selectedTasks,
-        config: {
-            layoutConfig: this._layoutConfig,
-            epicConfig: this._sprintConfig.epicData
-        } 
+        layoutConfig: this._layoutConfig
     });
 };
 
