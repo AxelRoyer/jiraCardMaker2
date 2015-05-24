@@ -238,11 +238,6 @@ Card._getEpicConfig = function (epicId) {
 		return false;
 	}
 
-	for (var i = 0, len = this._epicConfig.epics.length ; i < len ; i++) {
-		if (this._epicConfig.epics[i].key === epicId) {
-			return this._epicConfig.epics[i];
-		}
-	}
 };
 
 Card._updateUI = function () {
@@ -269,13 +264,13 @@ Card._updateUI = function () {
 		    this._parentProjectContainer.style.visibility = this._cardLayoutConfig.parent.checked === true ? "visible" : "hidden";;
 	    }		    
 
-		// epicConfig = this._getEpicConfig(this._data.fields.customfield_10870);
-		// if (epicConfig) {
-	 //    	this._epicContainer.textContent = epicConfig.epicLabel;
-	 //    	this._epicContainer.style.background = epicConfig.color; 
-		// } else {
-		// 	this._epicContainer.style.display = "none";
-		// }
+	    var epic = this._data.getEpics();
+		if (epic) {
+	    	this._epicContainer.textContent = epic.name;
+	    	this._epicContainer.style.background = epic.color; 
+		} else {
+			this._epicContainer.style.display = "none";
+		}
 
 	    this._estimateContainer.style.visibility = this._cardLayoutConfig.estimate.checked === true ? "visible" : "hidden";;
 	    this._qrcodeContainer.style.visibility = this._cardLayoutConfig.qrcode.checked === true ? "visible" : "hidden";;
@@ -416,9 +411,7 @@ PrintPage.createdCallback = function() {
 PrintPage.attachedCallback = function() {
 };
 
-PrintPage.show = function (params) {
-	debugger;
-	
+PrintPage.show = function (params) {	
     this.style.display = "block";
     
     for (var i = 0, len = params.tasks.length ; i < len ; i++) {
@@ -737,7 +730,6 @@ TaskSelectionRow.isSelected = function () {
 };
 
 TaskSelectionRow.setData = function (taskData) {
-	console.log(taskData);
 	this._data = taskData;
 	this._level = parseInt(this.dataset.level);
 	var nextLevel = this._level + 1;
@@ -1005,11 +997,24 @@ Task.prototype.getSubTasks = function () {
 };
 
 Task.prototype.getEpics = function () {
-	debugger;
+	var epicId = this._taskData.fields.customfield_10870;
+
+	if (epicId) {
+		for (var i = 0, len = this._epicData.epics.length ; i < len ; i++) {
+			var epic = this._epicData.epics[i];
+			if (epic.key === epicId) {
+				return {
+					name: epic.epicLabel,
+					color: epic.epicColor
+				}
+			}
+		}
+	}
+	return null;
 };
 
 Task.prototype.getType = function () {
-	return this._taskData.fields.issuetype.name.replace(" ", "")
+	return this._taskData.fields.issuetype.name.replace(" ", "");
 };
 
 Task.prototype.getParent = function () {

@@ -45,11 +45,24 @@ Task.prototype.getSubTasks = function () {
 };
 
 Task.prototype.getEpics = function () {
-	debugger;
+	var epicId = this._taskData.fields.customfield_10870;
+
+	if (epicId) {
+		for (var i = 0, len = this._epicData.epics.length ; i < len ; i++) {
+			var epic = this._epicData.epics[i];
+			if (epic.key === epicId) {
+				return {
+					name: epic.epicLabel,
+					color: epic.epicColor
+				}
+			}
+		}
+	}
+	return null;
 };
 
 Task.prototype.getType = function () {
-	return this._taskData.fields.issuetype.name.replace(" ", "")
+	return this._taskData.fields.issuetype.name.replace(" ", "");
 };
 
 Task.prototype.getParent = function () {

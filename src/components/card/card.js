@@ -41,11 +41,6 @@ Card._getEpicConfig = function (epicId) {
 		return false;
 	}
 
-	for (var i = 0, len = this._epicConfig.epics.length ; i < len ; i++) {
-		if (this._epicConfig.epics[i].key === epicId) {
-			return this._epicConfig.epics[i];
-		}
-	}
 };
 
 Card._updateUI = function () {
@@ -72,14 +67,13 @@ Card._updateUI = function () {
 		    this._parentProjectContainer.style.visibility = this._cardLayoutConfig.parent.checked === true ? "visible" : "hidden";;
 	    }		    
 
-	    debugger;
-		// epicConfig = this._getEpicConfig(this._data.fields.customfield_10870);
-		// if (epicConfig) {
-	 //    	this._epicContainer.textContent = epicConfig.epicLabel;
-	 //    	this._epicContainer.style.background = epicConfig.color; 
-		// } else {
-		// 	this._epicContainer.style.display = "none";
-		// }
+	    var epic = this._data.getEpics();
+		if (epic) {
+	    	this._epicContainer.textContent = epic.name;
+	    	this._epicContainer.style.background = epic.color; 
+		} else {
+			this._epicContainer.style.display = "none";
+		}
 
 	    this._estimateContainer.style.visibility = this._cardLayoutConfig.estimate.checked === true ? "visible" : "hidden";;
 	    this._qrcodeContainer.style.visibility = this._cardLayoutConfig.qrcode.checked === true ? "visible" : "hidden";;
