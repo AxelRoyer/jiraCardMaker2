@@ -26,7 +26,7 @@ task-selection-row {
 		}
 
 		.task-title {
-			overflow: auto;
+			overflow: hidden;
   			text-overflow: ellipsis;
   			white-space: nowrap;
   			color: gray;
